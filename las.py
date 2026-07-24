@@ -9,7 +9,7 @@ st.set_page_config(page_title="Check Link Tự Động", page_icon="🛡️")
 # ⚙️ CHỈ DÀNH CHO BẠN (CẤU HÌNH GIAO DIỆN)
 # =========================================================
 # 1. Dán link ảnh nền bạn muốn vào giữa 2 dấu ngoặc kép:
-BG_IMAGE_URL ="https://i.ibb.co/6R2vMv1/nen.png"
+BG_IMAGE_URL =""
 
 # 2. Phông chữ (Ví dụ: 'Roboto', 'Montserrat', 'Segoe UI', 'Arial', 'Courier New'...)
 FONT_NAME = "Roboto"
