@@ -9,7 +9,7 @@ st.set_page_config(page_title="Check Link Tự Động", page_icon="🛡️")
 # ⚙️ CẤU HÌNH GIAO DIỆN & PHÔNG NỀN
 # =========================================================
 # Link ảnh nền trực tiếp (đã chuẩn hóa định dạng i.ibb.co)
-BG_IMAGE_URL = "https://i.ibb.co/6R2vMv1/nen.png" 
+BG_IMAGE_URL = "" 
 FONT_NAME = "Roboto"
 # =========================================================
 
