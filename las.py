@@ -5,7 +5,7 @@ import re
 # Cấu hình giao diện trang web
 st.set_page_config(page_title="Check Link Tự Động", page_icon="🛡️")
 
-st.title("🛡️ Check Verity Link/URL ( MADE By Miruxz")
+st.title("🛡️ Kiểm Tra Độ Uy Tín Của Link")
 st.write("Dán đường dẫn (URL) vào bên dưới để hệ thống quét và phân tích độ an toàn:")
 
 # Ô nhập link
@@ -24,8 +24,10 @@ def analyze_url(url):
     try:
         parsed = urllib.parse.urlparse(url if "://" in url else "http://" + url)
         domain = parsed.netloc.lower()
+        if not domain or "." not in domain:
+            raise ValueError("Invalid domain")
     except:
-        return 100, ["🚨 Định dạng đường dẫn bị lỗi!"]
+        return 100, ["🚨 Định dạng đường dẫn bị lỗi! 😂 Nhấn vào sẽ chặt tay! 🪓🤣"]
 
     # 2. Kiểm tra nếu dùng IP thay cho tên miền
     ip_pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
@@ -53,6 +55,10 @@ def analyze_url(url):
             score += 35
             reasons.append(f"🚨 Có dấu hiệu giả mạo thương hiệu **{brand.upper()}**!")
 
+    # Nếu link nguy hiểm (điểm rủi ro cao), thêm câu cảnh báo hài hước vào
+    if score >= 50:
+        reasons.append("🤣 **Cảnh báo: Link này nguy hiểm lắm, nhấn vào sẽ chặt tay! 🪓😜**")
+
     return score, reasons
 
 # Nút kiểm tra
@@ -74,3 +80,7 @@ if st.button("🔍 Kiểm Tra Ngay", use_container_width=True):
         else:
             st.success("✅ **LINK CÓ VẺ AN TOÀN!**")
             st.write("Không phát hiện dấu hiệu lừa đảo phổ biến.")
+
+# Dòng Note ghi chú ở cuối trang
+st.markdown("---")
+st.caption("📌 *(NOTE: Đây ms là phiên bản Beta xin mọi người thông cảm nếu có thông tin sai lệch trọng, trong tương lai sẽ cs những bản Mega update.Xin cảm ơn)*")
