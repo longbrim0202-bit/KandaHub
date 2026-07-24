@@ -5,7 +5,7 @@ import re
 # Cấu hình giao diện trang web
 st.set_page_config(page_title="Check Link Tự Động", page_icon="🛡️")
 
-st.title("🛡️ Kiểm Tra Độ Uy Tín Của Link")
+st.title("🛡️ Check Verity Link/URL ( MADE By Miruxz")
 st.write("Dán đường dẫn (URL) vào bên dưới để hệ thống quét và phân tích độ an toàn:")
 
 # Ô nhập link
