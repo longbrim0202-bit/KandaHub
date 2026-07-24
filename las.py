@@ -39,8 +39,37 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
+# =========================================================
+# 📢 THÔNG BÁO QUAN TRỌNG KHI VỪA VÀO WEB
+# =========================================================
+@st.dialog("📢 THÔNG BÁO QUAN TRỌNG 📢")
+def show_welcome_notice():
+    st.warning("""
+    ⚠️ **CẢNH BÁO TỪ HỆ THỐNG:**
+    
+    🗓️ **Sau ngày 01/07/2026**, tất cả các shop buôn bán và kinh doanh acc, vật phẩm game, đơn vị tiền ảo *(liên quan đến game)* gần như **đã bị khai tử**! 💀🛑
+    
+    ❌ Nếu mọi người có vô tình truy cập vào bất kỳ trang web nào có dịch vụ liên quan như trên thì **gần như 99.9% ĐỀU LÀ TRANG WEB GIẢ MẠO / LỪA ĐẢO!** 🎭🚨
+    
+    👉 Hãy cực kỳ cẩn trọng để tránh bị mất tiền và lộ thông tin cá nhân nhé! 🛡️✨
+    """)
+    if st.button("Đã Hiểu & Tiếp Tục 🚀", use_container_width=True):
+        st.rerun()
+
+# Kích hoạt popup thông báo lần đầu truy cập
+if "has_seen_notice" not in st.session_state:
+    st.session_state.has_seen_notice = True
+    show_welcome_notice()
+
+# Ban-nơ cảnh báo cố định ở đầu trang web để mọi người luôn đọc được
+st.error("""
+🚨 **CẢNH BÁO TỰ ĐỘNG (01/07/2026):** Sau thời điểm này, các shop kinh doanh acc/vật phẩm/tiền game gần như **đã bị khai tử** 💀. Bất kỳ web nào còn hoạt động dịch vụ trên đều có rủi ro cao là **GIẢ MẠO / LỪA ĐẢO**! ❌
+""")
+
+st.markdown("---")
+
 # --- NỘI DUNG WEB ---
-st.title("🛡️ Check LinK/URL (MADE BY MIRUXZ AND MORI")
+st.title("🛡️ Check Link/URL(By Miruxz and Mori")
 st.write("Dán đường dẫn (URL) vào bên dưới để hệ thống quét và phân tích độ an toàn:")
 
 url_input = st.text_input("", placeholder="Ví dụ: https://facebook.com hoặc http://dangnhap-garena-nhankimcuong.xyz", label_visibility="collapsed")
@@ -80,7 +109,6 @@ def analyze_url(url):
         score += 25
         reasons.append("⚠️ Sử dụng đuôi tên miền rẻ/miễn phí có rủi ro cao (.xyz, .tk, .vip, .club...).")
     else:
-        # Nếu dùng tên miền chuẩn
         safe_evidences.append(f"🌐 **Sử dụng tên miền chuẩn/phổ biến:** `.{domain.split('.')[-1]}` (Không phải tên miền rác/rẻ tiền).")
 
     # Danh sách tên miền chính chủ chuẩn
@@ -165,7 +193,7 @@ def analyze_url(url):
         score += 20
         reasons.append("🔗 **Link rút gọn:** Web sử dụng dịch vụ ẩn đường dẫn thật để giấu link độc hại.")
 
-    # 10. Kiểm tra Dấu hiệu SHOP FAKE & BÁN ACC
+    # 10. Kiểm tra Dấu hiệu SHOP FAKE & BÁN ACC (Tích hợp cảnh báo sau 1/7/2026)
     game_keywords = ['roblox', 'ff', 'freefire', 'lienquan', 'pubg', 'genshin', 'robux', 'bloxfruit']
     shop_keywords = ['shop', 'acc', 'nick', 'giare', 'random', 'banacc', 'muaacc', 'vongquay', 'kimcuong']
     celebrities = ['mixi', 'domixi', 'cris', 'crisdevil', 'pewpew', 'linhngocdam', 'thaydau', 'baconcon', 'tuyenmou']
@@ -173,16 +201,13 @@ def analyze_url(url):
     has_game_or_shop = any(kw in url_lower for kw in game_keywords + shop_keywords)
     found_celeb = [c for c in celebrities if c in url_lower]
 
-    if has_game_or_shop and found_celeb:
-        score += 40
-        reasons.append(f"🎭 **Dấu hiệu SHOP FAKE NGƯỜI NỔI TIẾNG:** Phát hiện tên Idol/Streamer (`{', '.join(found_celeb)}`) kết hợp với shop bán acc/robux. Hầu hết Streamer KHÔNG mở shop bán acc, coi chừng lừa đảo!")
-    elif has_game_or_shop:
-        score += 15
-        reasons.append("🎮 Phát hiện dịch vụ Shop Game / Bán Acc / Vòng quay may mắn. Cần kiểm tra kỹ uy tín trước khi nạp tiền.")
+    if has_game_or_shop:
+        score += 50
+        reasons.append("🚨 **CẢNH BÁO SHOP GAME GIẢ MẠO (QUY ĐỊNH 01/07/2026):** Phát hiện dịch vụ shop bán acc/vật phẩm game. Sau mốc 01/07/2026, hầu hết shop game đều đã bị cấm/khai tử. Web này gần như **100% LÀ GIẢ MẠO / LỪA ĐẢO NẠP TIỀN**!")
 
     # Thêm các bằng chứng an toàn tổng quát nếu không dính vi phạm
-    if not found_cheat and not found_gambling and not found_adult and not found_malware_kw:
-        safe_evidences.append("🛡️ **Nội dung sạch:** Không tìm thấy từ khóa cờ bạc, phim 18+, tool hack hay mã độc.")
+    if not found_cheat and not found_gambling and not found_adult and not found_malware_kw and not has_game_or_shop:
+        safe_evidences.append("🛡️ **Nội dung sạch:** Không tìm thấy từ khóa cờ bạc, phim 18+, tool hack, shop game khai tử hay mã độc.")
 
     # Cảnh báo nguy hiểm tổng thể
     if score >= 50:
