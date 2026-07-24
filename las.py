@@ -9,7 +9,7 @@ st.set_page_config(page_title="Check Link Tự Động", page_icon="🛡️")
 # ⚙️ CHỈ DÀNH CHO BẠN (CẤU HÌNH GIAO DIỆN)
 # =========================================================
 # 1. Dán link ảnh nền bạn muốn vào giữa 2 dấu ngoặc kép:
-BG_IMAGE_URL ="https://ibb.co/rKKvtwjC"
+BG_IMAGE_URL ="https://i.ibb.co/6R2vMv1/nen.png"
 
 # 2. Phông chữ (Ví dụ: 'Roboto', 'Montserrat', 'Segoe UI', 'Arial', 'Courier New'...)
 FONT_NAME = "Roboto"
@@ -162,4 +162,4 @@ if st.button("🔍 Kiểm Tra Ngay", use_container_width=True):
 
 # Dòng Note ghi chú ở cuối trang
 st.markdown("---")
-st.caption("📌 *(NOTE: Đây là dự án đầu tiên của bọn mik và cũng đang là phiên bản Beta xin mọi người thông cảm nếu có thông tin sai lệch mong mọi người thông cảm, trong tương lai sẽ cs những bản Mega update.Xin cảm ơn)*")
+st.caption("📌 *(NOTE: Đây là dự án đầu tiên của bọn mik và cũng đang là phiên bản Beta,nếu có thông tin sai lệch mong mọi người thông cảm, trong tương lai sẽ cs những bản Mega update.Xin cảm ơn)*")
