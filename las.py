@@ -3,43 +3,51 @@ import urllib.parse
 import re
 
 # Cấu hình giao diện trang web
-st.set_page_config(page_title="Check URL/LINK(BY MIRUXZ AND MORI)", page_icon="🛡️")
+st.set_page_config(page_title="Check Link Tự Động", page_icon="🛡️")
 
-# --- Ô NHẬP LINK ẢNH NỀN TÙY CHỌN ---
-st.subheader("🖼️ Tùy Chỉnh Phông Nền")
-bg_image_url = st.text_input(
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd-owPNbKUVBeZOssR_5MQ3u_ci4PLrW3czNa0wn8_NQ&s=10:",
-    value="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop", # Link ảnh mặc định
-    placeholder="https://example.com/anh-nen.jpg"
-)
+# =========================================================
+# ⚙️ CHỈ DÀNH CHO BẠN (CẤU HÌNH GIAO DIỆN)
+# =========================================================
+# 1. Dán link ảnh nền bạn muốn vào giữa 2 dấu ngoặc kép:
+BG_IMAGE_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL0AAACUCAMAAADxqtj8AAAA21BMVEX////+zQb8txF0c25ZWVv8tAD2zmz+9Nj80Tb9zyv978BxcGv7vCz76cGXl5R0dG2Pj4s8PD7ctRRpaGP/0QA2OD9VTzpvcHCSh1/yxhj/31fz8/Lm5uX8vQ5hYFr/+d39xw3Y2Naysq+lpaPJyMaAgHv++ur/20dTVVyZiEJDSV5ya0duZ0j/1hd7bUdaWFKsoX799M/822z911zCpCyMfUdoZFONejtMUF2rkTVVUUaynkTBpDhER1JeVjNJSUwQID7XtiwiKD6SfyUrLz5xYypQSCwsLDP63JDgi4r+AAAD30lEQVR4nO2aa1ObQBSGJdQqYiEEbJtCEAJoool4iVVbU429+f9/UTfsQhKTsMQgezI9zxdnzPnw8Hr2ZcfJ1haCIAiCIAiCIAiCIAiCIMjrsf2wHQRBO/Rt0SqrYTt+ILuuSXFdOfCdTXkEe6xuqvIE1Rw/wEb4h5pqynPopqqFotW4OJqszrvLuq6T32uOaL18QnORe7pAqgk6/sCdipvYJkw/gBuIVlyKrWULr5Oc5ahOiCKZ/D309ANTA3p4iXwqSdQ1UvSObZPyDNtT51iHqj+RN+X2TD/afltNPyT6wgxzCLJ842C+W+wgzpYH4O6Hqbwq+wsH/Oz8wmseJ615tb5sr+16OiID6307SM1yDqWtpUPAdsdn0S9Pfkya/rLlEkTW9Gp+HdomxNZ3XNqHMS9TnzWPC2nzNTWxN9vcybbJwq/AqiBsIdSIn6gTJQ+qm3BWJ6SXswLRZ+G7cDqfVokaFWkSP1KTW1z9za2KYq5QJLSedNl8c6uCOHRx1CKLQ1ZHhdU69IqjF3wF+azyobyw6EHUCzTOGCdZ/GJHvAroHUePipWgzeyh3HXo5atwi7CGgvK+QntxoL04XmGvo305oL040F4c/5+9Dsf+U0Jhezou1v5oh3F4/jnh/HCnCPPjR9XLX1zupjQZu8WYG7/cqVr+6Eoqj6uq099TJEk5/pJwrCjr2St7AuyPqfr62Yuwp/Lru4uz3y1DXpR9OfKC7EtZG2H2JRxYcfZlRS/Gnh+9ZcG157pLjVFDKvAAIuw5hWNJg+ve1971AKY9Z3H6Nx3KDUh7TvTdk3eUky5vecDZW6NUnuiPOPrg7MneZPa33f6G2UunE/vOKWcWnL3Sm7Lv8Yah2ffPpuzPNm1zrLvbyd7fbdqplZpxGn7nW5MzC8/eGqTRxwNO9K39D9DsJes7Db/zPV/ea9UA2kv3w8R+eM+T34Zoz87t7V3eUKtGgGh/w+xzbmleIg/Snr2vhj+Wy9dqUO2bMa2cB2NJYbLgYdorQ2b/uNg+DR6kvTUasugfF12QJ8HDtL+nh9Ywnu7n7GfcQdp3OzR64+nnC3uvNSsP0L5/3aHRG79+z14xXwQP0z4pTCJvHPyZtp93h2ivxEzeMP5OZhe5A7S3msPOwwHlqckW31ukDtFeasQfU4yGtTR2oPbNxoTmgp6BbS9ZY+gPLyd3oPYZubEDt+fEDtietzGA7YuqA7T3+MsO1H5svoI6JPsV9gWY/UrbAsneW23Rwdh764mLsb9QWODrmhO29yv/ctRzbbs0nquWJ7vzviyq/v83giAIgiAIgiAIgiAIgiCbxT+OhXmq46z6BgAAAABJRU5ErkJggg==data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL0AAACUCAMAAADxqtj8AAAA21BMVEX////+zQb8txF0c25ZWVv8tAD2zmz+9Nj80Tb9zyv978BxcGv7vCz76cGXl5R0dG2Pj4s8PD7ctRRpaGP/0QA2OD9VTzpvcHCSh1/yxhj/31fz8/Lm5uX8vQ5hYFr/+d39xw3Y2Naysq+lpaPJyMaAgHv++ur/20dTVVyZiEJDSV5ya0duZ0j/1hd7bUdaWFKsoX799M/822z911zCpCyMfUdoZFONejtMUF2rkTVVUUaynkTBpDhER1JeVjNJSUwQID7XtiwiKD6SfyUrLz5xYypQSCwsLDP63JDgi4r+AAAD30lEQVR4nO2aa1ObQBSGJdQqYiEEbJtCEAJoool4iVVbU429+f9/UTfsQhKTsMQgezI9zxdnzPnw8Hr2ZcfJ1haCIAiCIAiCIAiCIAiCIMjrsf2wHQRBO/Rt0SqrYTt+ILuuSXFdOfCdTXkEe6xuqvIE1Rw/wEb4h5pqynPopqqFotW4OJqszrvLuq6T32uOaL18QnORe7pAqgk6/sCdipvYJkw/gBuIVlyKrWULr5Oc5ahOiCKZ/D309ANTA3p4iXwqSdQ1UvSObZPyDNtT51iHqj+RN+X2TD/afltNPyT6wgxzCLJ842C+W+wgzpYH4O6Hqbwq+wsH/Oz8wmseJ615tb5sr+16OiID6307SM1yDqWtpUPAdsdn0S9Pfkya/rLlEkTW9Gp+HdomxNZ3XNqHMS9TnzWPC2nzNTWxN9vcybbJwq/AqiBsIdSIn6gTJQ+qm3BWJ6SXswLRZ+G7cDqfVokaFWkSP1KTW1z9za2KYq5QJLSedNl8c6uCOHRx1CKLQ1ZHhdU69IqjF3wF+azyobyw6EHUCzTOGCdZ/GJHvAroHUePipWgzeyh3HXo5atwi7CGgvK+QntxoL04XmGvo305oL040F4c/5+9Dsf+U0Jhezou1v5oh3F4/jnh/HCnCPPjR9XLX1zupjQZu8WYG7/cqVr+6Eoqj6uq099TJEk5/pJwrCjr2St7AuyPqfr62Yuwp/Lru4uz3y1DXpR9OfKC7EtZG2H2JRxYcfZlRS/Gnh+9ZcG157pLjVFDKvAAIuw5hWNJg+ve1971AKY9Z3H6Nx3KDUh7TvTdk3eUky5vecDZW6NUnuiPOPrg7MneZPa33f6G2UunE/vOKWcWnL3Sm7Lv8Yah2ffPpuzPNm1zrLvbyd7fbdqplZpxGn7nW5MzC8/eGqTRxwNO9K39D9DsJes7Db/zPV/ea9UA2kv3w8R+eM+T34Zoz87t7V3eUKtGgGh/w+xzbmleIg/Snr2vhj+Wy9dqUO2bMa2cB2NJYbLgYdorQ2b/uNg+DR6kvTUasugfF12QJ8HDtL+nh9Ywnu7n7GfcQdp3OzR64+nnC3uvNSsP0L5/3aHRG79+z14xXwQP0z4pTCJvHPyZtp93h2ivxEzeMP5OZhe5A7S3msPOwwHlqckW31ukDtFeasQfU4yGtTR2oPbNxoTmgp6BbS9ZY+gPLyd3oPYZubEDt+fEDtietzGA7YuqA7T3+MsO1H5svoI6JPsV9gWY/UrbAsneW23Rwdh764mLsb9QWODrmhO29yv/ctRzbbs0nquWJ7vzviyq/v83giAIgiAIgiAIgiAIgiCbxT+OhXmq46z6BgAAAABJRU5ErkJggg=="
 
-# Áp dụng CSS để đổi nền theo URL nhập vào
-if bg_image_url.strip():
-    st.markdown(f"""
-        <style>
-        .stApp {{
-            background-image: url("{bg_image_url}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
+# 2. Phông chữ (Ví dụ: 'Roboto', 'Montserrat', 'Segoe UI', 'Arial', 'Courier New'...)
+FONT_NAME = "Roboto"
+# =========================================================
 
-        .main .block-container {{
-            background-color: rgba(255, 255, 255, 0.90); /* Lớp phủ sáng giúp rõ chữ */
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            margin-top: 1rem;
-        }}
-        </style>
-    """, unsafe_allow_html=True)
+# Áp dụng CSS đổi Ảnh Nền & Phông Chữ
+st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family={FONT_NAME.replace(" ", "+")}:wght@400;600;700&display=swap');
 
-st.markdown("---")
+    /* Đổi phông chữ cho toàn bộ web */
+    html, body, [class*="css"], .stMarkdown, p, div, button, input {{
+        font-family: '{FONT_NAME}', sans-serif !important;
+    }}
 
-# --- PHẦN QUÉT LINK AN TOÀN ---
-st.title("🛡️ Kiểm Tra Độ Uy Tín Của Link")
-st.write("Dán đường dẫn (URL) cần kiểm tra vào bên dưới để hệ thống quét và phân tích:")
+    /* Đặt ảnh nền từ link của bạn */
+    .stApp {{
+        background-image: url("{BG_IMAGE_URL}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+
+    /* Khung nội dung trắng sáng, sạch sẽ, bỏ phông tối */
+    .main .block-container {{
+        background-color: rgba(255, 255, 255, 0.92);
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-top: 2rem;
+    }}
+    </style>
+""", unsafe_allow_html=True)
+
+# --- NỘI DUNG WEB ---
+st.title("🛡️ Check Link/URL ( By Mori and Miruxz")
+st.write("Dán đường dẫn (URL) vào bên dưới để hệ thống quét và phân tích độ an toàn:")
 
 # Ô nhập link cần check
 url_input = st.text_input("", placeholder="Ví dụ: https://facebook.com hoặc http://shopmixigaming-acc.xyz", label_visibility="collapsed")
