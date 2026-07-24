@@ -3,27 +3,39 @@ import urllib.parse
 import re
 
 # Cấu hình giao diện trang web
-st.set_page_config(page_title="Check Link Tự Động", page_icon="🛡️")
+st.set_page_config(page_title="Check Link/URL ( by Miruxz and Mori)", page_icon="🛡️")
 
-st.title("🛡️ Check Link/URL(by Miruxz)")
+# --- PHÔNG NỀN (BACKGROUND) ---
+st.markdown("""
+    <style>
+    .stApp {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+    </style>
+""", unsafe_allow_html=True)
+# ------------------------------
+
+st.title("🛡️ Kiểm Tra Độ Uy Tín Của Link")
 st.write("Dán đường dẫn (URL) vào bên dưới để hệ thống quét và phân tích độ an toàn:")
 
 # Ô nhập link
-url_input = st.text_input("", placeholder="Ví dụ: https://facebook.com hoặc http://paypal-security.xyz", label_visibility="collapsed")
+url_input = st.text_input("", placeholder="Ví dụ: https://facebook.com hoặc http://shopmixigaming-acc.xyz", label_visibility="collapsed")
 
 def analyze_url(url):
     """Hàm phân tích độ uy tín của URL"""
     score = 0
     reasons = []
+    url_lower = url.lower()
     
     # 1. Kiểm tra HTTPS
-    if not url.startswith("https://"):
+    if not url_lower.startswith("https://"):
         score += 20
         reasons.append("⚠️ Web không có HTTPS (chỉ dùng HTTP).")
         
     try:
         parsed = urllib.parse.urlparse(url if "://" in url else "http://" + url)
         domain = parsed.netloc.lower()
+        path = parsed.path.lower()
         if not domain or "." not in domain:
             raise ValueError("Invalid domain")
     except:
@@ -36,26 +48,63 @@ def analyze_url(url):
         reasons.append("🚨 Sử dụng địa chỉ IP trực tiếp (Rủi ro lừa đảo rất cao!).")
 
     # 3. Kiểm tra đuôi tên miền rủi ro
-    risky_tlds = ['.tk', '.ml', '.ga', '.cf', '.gq', '.zip', '.top', '.work', '.xyz', '.cc']
+    risky_tlds = ['.tk', '.ml', '.ga', '.cf', '.gq', '.zip', '.top', '.work', '.xyz', '.cc', '.club', '.vip', '.site', '.online']
     if any(domain.endswith(tld) for tld in risky_tlds):
         score += 25
-        reasons.append("⚠️ Sử dụng đuôi tên miền miễn phí/rủi ro (.xyz, .tk, .zip...).")
+        reasons.append("⚠️ Sử dụng đuôi tên miền rẻ/miễn phí có rủi ro cao (.xyz, .tk, .vip, .club...).")
 
-    # 4. Kiểm tra từ khóa nhạy cảm
-    keywords = ['login', 'verify', 'account', 'secure', 'banking', 'update', 'free', 'gift', 'napthe', 'nhankimcuong']
-    found_words = [kw for kw in keywords if kw in url.lower()]
-    if found_words:
+    # 4. Kiểm tra Dấu hiệu CÁ ĐỘ / ĐÁNH BẠC
+    gambling_keywords = [
+        'bet', 'casino', 'cacuoc', 'nhacai', 'keonhacai', 'kubet', 'shbet', 
+        '88bet', 'fun88', 'w88', 'f8bet', 'jun88', 'hi88', 'baccarat', 
+        'taixiu', 'xocdia', 'slot', 'gamebai', 'nohu', 'danhbac', 'kèo'
+    ]
+    found_gambling = [kw for kw in gambling_keywords if kw in url_lower]
+    if found_gambling:
+        score += 45
+        reasons.append(f"🎰 **Dấu hiệu CÁ ĐỘ / ĐÁNH BẠC:** Chứa từ khóa nhà cái/cá cược (`{', '.join(found_gambling)}`). Hãy cẩn thận rủi ro vi phạm pháp luật và mất tiền!")
+
+    # 5. Kiểm tra Dấu hiệu SHOP FAKE & BÁN ACC
+    game_keywords = ['roblox', 'ff', 'freefire', 'lienquan', 'pubg', 'genshin', 'robux', 'bloxfruit']
+    shop_keywords = ['shop', 'acc', 'nick', 'giare', 'random', 'banacc', 'muaacc', 'vongquay', 'kimcuong']
+    celebrities = ['mixi', 'domixi', 'cris', 'crisdevil', 'pewpew', 'linhngocdam', 'thaydau', 'baconcon', 'tuyenmou']
+
+    has_game_or_shop = any(kw in url_lower for kw in game_keywords + shop_keywords)
+    found_celeb = [c for c in celebrities if c in url_lower]
+
+    if has_game_or_shop and found_celeb:
+        score += 40
+        reasons.append(f"🎭 **Dấu hiệu SHOP FAKE NGƯỜI NỔI TIẾNG:** Phát hiện tên Streamer/Idol (`{', '.join(found_celeb)}`) kết hợp với shop bán acc/robux. Rất nhiều Idol KHÔNG mở shop bán acc, coi chừng bị lừa tiền!")
+    elif has_game_or_shop:
+        score += 15
+        reasons.append("🎮 Phát hiện dịch vụ Shop Game / Bán Acc / Vòng quay may mắn. Cần kiểm tra kỹ uy tín trước khi nạp tiền.")
+
+    # 6. Kiểm tra Dấu hiệu NGUY CƠ DĨNH VIRUS / ĐỘC HẠI (MALWARE)
+    virus_exts = ['.exe', '.apk', '.bat', '.cmd', '.scr', '.vbs', '.iso', '.zip', '.rar']
+    found_virus_ext = [ext for ext in virus_exts if path.endswith(ext) or url_lower.endswith(ext)]
+    
+    # Kiểm tra link rút gọn nghi vấn giấu virus
+    short_link_services = ['bit.ly', 'tinyurl.com', 'is.gd', 'cutt.ly', 'goo.gl', 't.co']
+    is_short_link = any(s in domain for s in short_link_services)
+
+    if found_virus_ext:
+        score += 50
+        reasons.append(f"🦠 **CẢNH BÁO VIRUS / ĐỘC HẠI:** Link dẫn thẳng tới file thực thi/nén (`{', '.join(found_virus_ext)}`). Nhấn vào có thể bị tải virus, mã độc tống tiền hoặc chiếm quyền máy tính/điện thoại!")
+    elif is_short_link:
         score += 20
-        reasons.append(f"⚠️ Chứa từ khóa nhạy cảm: `{', '.join(found_words)}`")
+        reasons.append("🔗 **Link rút gọn:** Web sử dụng dịch vụ ẩn đường dẫn thật, hãy cẩn thận kẻ gian giấu link cài virus hoặc mã độc bên trong.")
+    elif len(url) > 100:
+        score += 15
+        reasons.append("🧬 **Link quá dài / bất thường:** Độ dài URL bất thường, thường dùng để chèn mã độc hoặc che giấu hành vi lừa đảo.")
 
-    # 5. Kiểm tra giả mạo thương hiệu
-    brands = ['facebook', 'google', 'paypal', 'shopee', 'momo', 'chinhphu', 'vtv']
+    # 7. Kiểm tra giả mạo thương hiệu lớn
+    brands = ['facebook', 'google', 'paypal', 'shopee', 'momo', 'chinhphu', 'vtv', 'telegram', 'zalo']
     for brand in brands:
         if brand in domain and not (domain.endswith(f"{brand}.com") or domain.endswith(f"{brand}.vn")):
             score += 35
-            reasons.append(f"🚨 Có dấu hiệu giả mạo thương hiệu **{brand.upper()}**!")
+            reasons.append(f"🚨 Có dấu hiệu giả mạo thương hiệu lớn **{brand.upper()}**!")
 
-    # Nếu link nguy hiểm (điểm rủi ro cao), thêm câu cảnh báo hài hước vào
+    # Cảnh báo nguy hiểm chung
     if score >= 50:
         reasons.append("🤣 **Cảnh báo: Link này nguy hiểm lắm, nhấn vào sẽ chặt tay! 🪓😜**")
 
@@ -84,3 +133,4 @@ if st.button("🔍 Kiểm Tra Ngay", use_container_width=True):
 # Dòng Note ghi chú ở cuối trang
 st.markdown("---")
 st.caption("📌 *(NOTE: Đây ms là phiên bản Beta xin mọi người thông cảm nếu có thông tin sai lệch trọng, trong tương lai sẽ cs những bản Mega update.Xin cảm ơn)*")
+    
