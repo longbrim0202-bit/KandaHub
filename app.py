@@ -3,7 +3,7 @@ import time
 
 # --- 1. CẤU HÌNH PHÔNG NỀN (CSS) ---
 # Dán link ảnh của bạn vào ô bên dưới:
-MY_BACKGROUND_IMAGE_URL = "73b3cf8b63cd12b0646c19a4e7b11f5c.png"
+MY_BACKGROUND_IMAGE_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDR-P5KHGQ319u8LAXSPsvdlJ6YW6yfDNwTZXCbGKb2w&s=10"
 
 st.markdown(f"""
     <style>
