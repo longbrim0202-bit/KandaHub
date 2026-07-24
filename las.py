@@ -69,7 +69,7 @@ st.error("""
 st.markdown("---")
 
 # --- NỘI DUNG WEB ---
-st.title("🛡️ Check Link/URL(By Miruxz and Mori")
+st.title("🛡️ Check Link/URL(By Miruxz and Mori)")
 st.write("Dán đường dẫn (URL) vào bên dưới để hệ thống quét và phân tích độ an toàn:")
 
 url_input = st.text_input("", placeholder="Ví dụ: https://facebook.com hoặc http://dangnhap-garena-nhankimcuong.xyz", label_visibility="collapsed")
