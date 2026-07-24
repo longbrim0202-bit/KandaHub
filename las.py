@@ -3,22 +3,45 @@ import urllib.parse
 import re
 
 # Cấu hình giao diện trang web
-st.set_page_config(page_title="Check Link/URL ( by Miruxz and Mori)", page_icon="🛡️")
+st.set_page_config(page_title="Check URL/LINK(BY MIRUXZ AND MORI)", page_icon="🛡️")
 
-# --- PHÔNG NỀN (BACKGROUND) ---
-st.markdown("""
-    <style>
-    .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    }
-    </style>
-""", unsafe_allow_html=True)
-# ------------------------------
+# --- Ô NHẬP LINK ẢNH NỀN TÙY CHỌN ---
+st.subheader("🖼️ Tùy Chỉnh Phông Nền")
+bg_image_url = st.text_input(
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd-owPNbKUVBeZOssR_5MQ3u_ci4PLrW3czNa0wn8_NQ&s=10:",
+    value="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop", # Link ảnh mặc định
+    placeholder="https://example.com/anh-nen.jpg"
+)
 
+# Áp dụng CSS để đổi nền theo URL nhập vào
+if bg_image_url.strip():
+    st.markdown(f"""
+        <style>
+        .stApp {{
+            background-image: url("{bg_image_url}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+
+        .main .block-container {{
+            background-color: rgba(255, 255, 255, 0.90); /* Lớp phủ sáng giúp rõ chữ */
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-top: 1rem;
+        }}
+        </style>
+    """, unsafe_allow_html=True)
+
+st.markdown("---")
+
+# --- PHẦN QUÉT LINK AN TOÀN ---
 st.title("🛡️ Kiểm Tra Độ Uy Tín Của Link")
-st.write("Dán đường dẫn (URL) vào bên dưới để hệ thống quét và phân tích độ an toàn:")
+st.write("Dán đường dẫn (URL) cần kiểm tra vào bên dưới để hệ thống quét và phân tích:")
 
-# Ô nhập link
+# Ô nhập link cần check
 url_input = st.text_input("", placeholder="Ví dụ: https://facebook.com hoặc http://shopmixigaming-acc.xyz", label_visibility="collapsed")
 
 def analyze_url(url):
@@ -83,7 +106,6 @@ def analyze_url(url):
     virus_exts = ['.exe', '.apk', '.bat', '.cmd', '.scr', '.vbs', '.iso', '.zip', '.rar']
     found_virus_ext = [ext for ext in virus_exts if path.endswith(ext) or url_lower.endswith(ext)]
     
-    # Kiểm tra link rút gọn nghi vấn giấu virus
     short_link_services = ['bit.ly', 'tinyurl.com', 'is.gd', 'cutt.ly', 'goo.gl', 't.co']
     is_short_link = any(s in domain for s in short_link_services)
 
@@ -133,4 +155,3 @@ if st.button("🔍 Kiểm Tra Ngay", use_container_width=True):
 # Dòng Note ghi chú ở cuối trang
 st.markdown("---")
 st.caption("📌 *(NOTE: Đây ms là phiên bản Beta xin mọi người thông cảm nếu có thông tin sai lệch trọng, trong tương lai sẽ cs những bản Mega update.Xin cảm ơn)*")
-    
