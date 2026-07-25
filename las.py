@@ -39,16 +39,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================================================
-# 📢 HỆ THỐNG THÔNG BÁO BẮT BUỘC KHI MỞ WEB
+# 📢 HỆ THỐNG THÔNG BÁO CẬP NHẬT HỆ THỐNG KHI VỪA VÀO WEB
 # =========================================================
 if "has_seen_notice" not in st.session_state:
     st.session_state.has_seen_notice = False
 
 if not st.session_state.has_seen_notice:
-    st.error("### 🛑 HỆ THỐNG XÁC NHẬN AN TOÀN")
-    st.warning("""
+    st.error("### 🚀 THÔNG BÁO NÂNG CẤP HỆ THỐNG")
+    st.info("""
     🇻🇳 **VIETNAMESE:**
-    🚀 **Cập nhật lớn V5:** Đã bổ sung bộ phân tích cấu trúc PE nhị phân chuyên sâu (Quét bảng Import API, phân tích mã máy và loại trừ toàn diện các trình cài đặt gốc như Chrome, Google Play, Steam...).
+    Trang web hiện đang trong quá trình cập nhật hệ thống nhằm nâng cao chất lượng dịch vụ, quét sâu và tối ưu hóa bộ lọc bảo mật tối đa cho người dùng! 
+    Mong mọi người thông cảm và chờ đợi thêm một chút xíu nữa thôi, quá trình update sẽ hoàn tất trong thời gian sớm nhất nhé! ❤️✨
     
     ⚠️ **CẢNH BÁO:**
     🗓️ **Sau ngày 01/07/2026**, các shop kinh doanh tài khoản, vật phẩm game gần như **đã bị khai tử**! 💀🛑
@@ -57,7 +58,8 @@ if not st.session_state.has_seen_notice:
     ---
     
     🇬🇧 **ENGLISH:**
-    🚀 **Major Update V5:** Added deep binary PE structure analysis (Scanning Import API tables, analyzing machine code, and whitelisting official installers like Chrome, Google Play, Steam...).
+    The system is currently undergoing an upgrade to enhance service quality, deep-scan capabilities, and optimize the security filter! 
+    Thank you for your patience—the update will be completed very soon! ❤️✨
     """)
     
     if st.button("✅ Đã Hiểu & Tiếp Tục", use_container_width=True, type="primary"):
@@ -66,14 +68,56 @@ if not st.session_state.has_seen_notice:
     st.stop()
 
 # =========================================================
-# 🛠️ HÀM PHÂN TÍCH CHUYÊN SÂU LÕI PE & NHỊ PHÂN (V5)
+# 🛠️ HÀM PHÂN TÍCH SÂU LINK / URL / SCRIPT (V7)
 # =========================================================
-def deep_binary_inspection(file_bytes, file_name):
+def analyze_link_or_script_deep(content):
+    score = 0
+    reasons = []
+    content_lower = content.lower()
+    
+    gambling_keywords = ['taixiu', 'tai-xiu', 'banca', 'ban-ca', 'nổ hũ', 'nohu', 'slot', 'casino', 'bet', 'cadoh', 'cá độ', 'đá gà', 'xocdia', 'xóc đĩa', 'ketqua', 'w88', 'fun88', 'fb88', '188bet']
+    found_gambling = [kw for kw in gambling_keywords if kw in content_lower]
+
+    adult_keywords = ['18+', 'sex', 'jav', 'xxx', 'khỏa thân', 'gái gọi', 'mát xa', 'nsfw', 'porn', 'chịch', 'vlxx']
+    found_adult = [kw for kw in adult_keywords if kw in content_lower]
+
+    phishing_keywords = ['free', 'robux', 'v-bucks', 'login', 'dang-nhap', 'verify', 'nhan-qua', 'shop', 'nap-tien', '1s', 'acc', 'giare', 'giftcode', 'nhanqua', 'momo', 'atm']
+    found_phishing = [kw for kw in phishing_keywords if kw in content_lower]
+
+    script_signatures = ['loadstring', 'getgenv', 'syn.request', 'xmlhttprequest', 'fetch(', 'document.cookie', 'navigator.sendbeacon', 'webhook', 'localStorage']
+    found_script_sigs = [sig for sig in script_signatures if sig in content_lower]
+
+    is_url = content.startswith('http://') or content.startswith('https://') or '.' in content and ' ' not in content.strip()
+
+    if found_gambling:
+        score += 90
+        reasons.append(f"• **Thể loại:** Website Cá độ / Tài xỉu / Đánh bạc trực tuyến (`{', '.join(found_gambling)}`).\n• **Hoạt động:** Chuyên tổ chức cá cược, rủi ro mất tiền tài chính và vi phạm pháp luật.")
+    elif found_adult:
+        score += 90
+        reasons.append(f"• **Thể loại:** Website nội dung người lớn / 18+ (`{', '.join(found_adult)}`).\n• **Hoạt động:** Chứa mã độc chuyển hướng, quảng cáo bẩn và nguy cơ đánh cắp thông tin trình duyệt.")
+    elif found_script_sigs:
+        score += 85
+        reasons.append(f"• **Thể loại:** Script đánh cắp dữ liệu / Webhook (`{', '.join(found_script_sigs)}`).\n• **Hoạt động:** Đánh cắp token phiên đăng nhập hoặc thông tin cá nhân ngay khi thực thi.")
+    elif is_url and (len(found_phishing) >= 2 or 'bit.ly' in content_lower or 'tinyurl' in content_lower or 'short' in content_lower or 'login' in content_lower):
+        score += 80
+        reasons.append(f"• **Thể loại:** Link giả mạo / Lừa đảo chiếm đoạt tài khoản (Phishing).\n• **Hoạt động:** Sử dụng từ khóa bẫy (`{', '.join(found_phishing)}`) để giả mạo trang đăng nhập uy tín và đánh cắp mật khẩu.")
+    elif is_url:
+        score += 10
+        reasons.append("• **Thể loại:** Đường dẫn URL thông thường.\n• **Hoạt động:** Không phát hiện mẫu nhận diện nguy hiểm rõ ràng, nhưng cần lưu ý khi cung cấp thông tin cá nhân.")
+    else:
+        score += 30
+        reasons.append("• **Thể loại:** Dữ liệu văn bản thô / Cú pháp lạ.\n• **Hoạt động:** Có chứa đoạn ký tự bất thường, cần cẩn trọng.")
+
+    return score, reasons
+
+# =========================================================
+# 🛠️ HÀM PHÂN TÍCH CHUYÊN SÂU LÕI PE & NHỊ PHÂN (V7)
+# =========================================================
+def deep_binary_inspection_v7(file_bytes, file_name):
     score = 0
     reasons = []
     file_type = "File Sạch"
     
-    # 1. Danh sách trắng toàn diện các trình cài đặt chính hãng (Khắc phục lỗi nhận diện nhầm Chrome, Steam,...)
     trusted_installers = {
         'chromesetup.exe': 'Google LLC (Official Google Chrome Installer)',
         'chromeinstaller': 'Google LLC',
@@ -99,11 +143,9 @@ def deep_binary_inspection(file_bytes, file_name):
     except:
         decoded_text = ""
 
-    # 2. Kiểm tra sâu các hàm API Windows độc hại / Can thiệp tiến trình
     malicious_apis = ['virtualalloc', 'writeprocessmemory', 'createremotethread', 'setwindowshookex']
     found_apis = [api for api in malicious_apis if api in decoded_text]
 
-    # 3. Chữ ký mã độc & Tool hack / Cleaner
     cleaner_signatures = ['reg delete', 'temp', 'prefetch', 'appcompatflags', 'usnjrnl', 'clear-recyclebin', 'taskkill', 'del /f /q']
     found_cleaner = [sig for sig in cleaner_signatures if sig in decoded_text]
 
@@ -118,31 +160,30 @@ def deep_binary_inspection(file_bytes, file_name):
 
     file_size_kb = len(file_bytes) / 1024
 
-    # 4. Đánh giá phân loại dựa trên chiều sâu mã nhị phân
     if found_malware:
-        score += 85
-        file_type = "File Mã Độc Trá Hình"
-        reasons.append(f"• **Thể loại:** Mã độc đánh cắp (`{', '.join(found_malware)}`).\n• **Hoạt động:** Trộm cắp thông tin cá nhân và tài khoản ngầm.")
+        score += 90
+        file_type = "File Mã Độc Trá Hình (Stealer / Logger)"
+        reasons.append(f"• **Thể loại:** Mã độc đánh cắp thông tin (`{', '.join(found_malware)}`).\n• **Hoạt động:** Trộm cắp cookie, mật khẩu trình duyệt và thông tin cá nhân ngầm.")
     elif found_apis:
-        score += 75
-        file_type = "File Can Thiệp Hệ Thống Sâu (Nguy hiểm)"
-        reasons.append(f"• **Thể loại:** Chèn mã tiến trình (`{', '.join(found_apis)}`).\n• **Hoạt động:** Sử dụng API cấp thấp để can thiệp vào bộ nhớ ứng dụng khác.")
+        score += 80
+        file_type = "File Can Thiệp Tiến Trình Sâu (Injection)"
+        reasons.append(f"• **Thể loại:** Chèn mã tiến trình hệ thống (`{', '.join(found_apis)}`).\n• **Hoạt động:** Sử dụng API cấp thấp để tiêm mã độc vào bộ nhớ của ứng dụng hợp pháp.")
     elif found_cleaner:
         score += 65
         file_type = "File Xóa Dấu Trace / Cleaner"
-        reasons.append(f"• **Thể loại:** Script dọn dẹp hệ thống/xóa log (`{', '.join(found_cleaner)}`).\n• **Hoạt động:** Xóa dấu vết hoạt động hoặc nhật ký cheat, rủi ro lỗi Windows.")
+        reasons.append(f"• **Thể loại:** Script dọn dẹp hệ thống/xóa log (`{', '.join(found_cleaner)}`).\n• **Hoạt động:** Xóa dấu vết hoạt động hoặc nhật ký hack, rủi ro làm hỏng hệ thống.")
     elif found_cheats:
         score += 50
         file_type = "Tool Hack / Cheat Game"
-        reasons.append(f"• **Thể loại:** Script gian lận (`{', '.join(found_cheats)}`).\n• **Hoạt động:** Tác động trực tiếp vào game để trục lợi, dễ bị ban tài khoản.")
+        reasons.append(f"• **Thể loại:** Script gian lận game (`{', '.join(found_cheats)}`).\n• **Hoạt động:** Tác động trực tiếp vào game để trục lợi, nguy cơ cao bị khóa tài khoản.")
     elif found_packers and file_name.endswith('.exe'):
         score += 30
         file_type = "Tool Đóng Gói (Ẩn Mã Nguồn)"
         reasons.append(f"• **Thể loại:** Đóng gói nhị phân (`{', '.join(found_packers)}`).\n• **Hoạt động:** Che giấu cấu trúc mã bên trong khỏi các trình quét thông thường.")
     elif file_name.endswith('.exe') and file_size_kb < 15:
         score += 40
-        file_type = "File Thực Thi Nghi Vấn"
-        reasons.append(f"• **Thể loại:** File Dropper nhỏ ({file_size_kb:.2f} KB).\n• **Hoạt động:** Tải payload độc hại từ internet về máy.")
+        file_type = "File Thực Thi Nghi Vấn (Dropper)"
+        reasons.append(f"• **Thể loại:** File Dropper nhỏ gọn ({file_size_kb:.2f} KB).\n• **Hoạt động:** Tải payload mã độc phụ từ internet về máy khi chạy.")
     else:
         score += 0
         file_type = "File Sạch"
@@ -164,20 +205,33 @@ tab1, tab2 = st.tabs(["🔗 Check Link / URL / Script", "📁 Check File"])
 # ---------------------------------------------------------
 with tab1:
     st.write("### 🔍 Check Link / URL / Script")
+    st.info("💡 Hệ thống quét sâu: Phát hiện web 18+, cá độ, tài xỉu, link fake và lừa đảo ăn cắp tài khoản.")
     text_input = st.text_area("Dán link, URL hoặc script vào đây:", height=150)
     
     if st.button("🚀 Kiểm Tra Ngay", use_container_width=True, key="btn_tab1"):
         if not text_input.strip():
             st.warning("Vui lòng nhập dữ liệu!")
         else:
-            st.success("Đã tiếp nhận dữ liệu.")
+            score, link_reasons = analyze_link_or_script_deep(text_input)
+            
+            st.divider()
+            if score >= 75:
+                st.error("🚨 CẢNH BÁO NGUY HIỂM: Phát hiện Web Độc hại / Cá độ / 18+ / Lừa đảo!")
+            elif score >= 30:
+                st.warning("⚠️ Cảnh báo: Phát hiện yếu tố nghi vấn.")
+            else:
+                st.success("✅ Dữ liệu an toàn.")
+                
+            st.markdown("### 📊 Dẫn chứng chi tiết:")
+            for r in link_reasons:
+                st.write(r)
 
 # ---------------------------------------------------------
 # TAB 2: CHECK FILE
 # ---------------------------------------------------------
 with tab2:
     st.write("### 📂 Check File")
-    st.info("💡 Lưu ý: Bot AI DeepScan V5 quét chuyên sâu cấu trúc PE và loại trừ các trình cài đặt gốc.")
+    st.info("💡 Bot AI DeepScan V7 quét chuyên sâu cấu trúc PE, API độc hại và loại trừ các trình cài đặt gốc.")
     
     uploaded_file = st.file_uploader("Tải file cần check:", type=None)
     
@@ -193,17 +247,17 @@ with tab2:
             else:
                 st.write(f"**File:** `{uploaded_file.name}` | **Dung lượng:** `{file_size_mb:.2f} MB`")
                 
-                score, file_category, warnings = deep_binary_inspection(file_bytes, uploaded_file.name.lower())
+                score, file_category, warnings = deep_binary_inspection_v7(file_bytes, uploaded_file.name.lower())
                 
                 st.divider()
                 st.markdown(f"### 🏷️ Kết quả: **{file_category}**")
                 
-                if score >= 70:
-                    st.error("Phát hiện mã độc hại!")
+                if score >= 75:
+                    st.error("🚨 Phát hiện mã độc / Stealer / Can thiệp tiến trình sâu!")
                 elif score >= 40:
-                    st.warning("Phát hiện tệp đáng ngờ / Cleaner / Tool Hack.")
+                    st.warning("⚠️ Phát hiện tệp đáng ngờ / Cleaner / Tool Hack.")
                 else:
-                    st.success("File an toàn.")
+                    st.success("✅ File an toàn.")
                 
                 if warnings:
                     st.markdown("### 📊 Dẫn chứng chi tiết:")
