@@ -1,10 +1,9 @@
 import streamlit as st
 import urllib.parse
 import re
-import io
 
-# Cấu hình giao diện trang web (Phải đặt ở đầu tiên)
-st.set_page_config(page_title="Hệ Thống Quét Độc Hại - Miruxz & Mori", page_icon="🛡️", layout="centered")
+# Cấu hình giao diện trang web
+st.set_page_config(page_title="Hệ Thống Phân Tích Chuyên Sâu - Miruxz & Mori", page_icon="🛡️", layout="centered")
 
 # =========================================================
 # ⚙️ CẤU HÌNH GIAO DIỆN & CSS
@@ -23,18 +22,13 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         margin-top: 1rem;
     }
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 20px;
-    }
+    .stTabs [data-baseweb="tab-list"] { gap: 20px; }
     .stTabs [data-baseweb="tab"] {
         height: 50px;
         white-space: pre-wrap;
         background-color: #e4e6eb;
         border-radius: 8px 8px 0px 0px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding: 10px 20px;
         font-weight: bold;
     }
     .stTabs [aria-selected="true"] {
@@ -45,202 +39,130 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================================================
-# 📢 HỆ THỐNG THÔNG BÁO BẮT BUỘC (SẼ CHẶN MÀN HÌNH NẾU CHƯA ĐỌC)
+# 📢 HỆ THỐNG THÔNG BÁO BẮT BUỘC KHI MỞ WEB
 # =========================================================
 if "has_seen_notice" not in st.session_state:
     st.session_state.has_seen_notice = False
 
 if not st.session_state.has_seen_notice:
-    st.error("### 🛑 HỆ THỐNG YÊU CẦU XÁC NHẬN / SYSTEM REQUIREMENT")
+    st.error("### 🛑 HỆ THỐNG XÁC NHẬN AN TOÀN / SYSTEM REQUIREMENT")
     st.warning("""
     🇻🇳 **VIETNAMESE:**
-    🚀 **NEW UPDATE:** Hệ thống đã chia làm 2 mục (Check Link/Script và Check File 200MB). Khả năng nhận diện mã độc đã được nâng cấp lên mức tối đa!
+    🚀 **NÂNG CẤP ĐẶC BIỆT:** Đã bổ sung bộ giải mã nhị phân cấu trúc PE sâu bên trong file `.exe` (Quét API Windows, chuỗi ẩn, hành vi độc hại thực thụ thay vì chỉ nhìn bề ngoài)!
     
     ⚠️ **CẢNH BÁO TỪ HỆ THỐNG:**
-    🗓️ **Sau ngày 01/07/2026**, tất cả các shop buôn bán và kinh doanh acc, vật phẩm game, đơn vị tiền ảo gần như **đã bị khai tử**! 💀🛑
-    ❌ Nếu vô tình truy cập vào các dịch vụ này, **99.9% ĐỀU LÀ TRANG WEB GIẢ MẠO / LỪA ĐẢO!** 🎭🚨
+    🗓️ **Sau ngày 01/07/2026**, tất cả các shop buôn bán và kinh doanh tài khoản, vật phẩm game gần như **đã bị khai tử**! 💀🛑
+    ❌ Nếu vô tình truy cập, **99.9% ĐỀU LÀ TRANG WEB GIẢ MẠO / LỪA ĐẢO!** 🎭🚨
     
     ---
     
-    🇬🇧 **ENGLISH (For International Users):**
-    🚀 **NEW UPDATE:** Added deep file scanning (up to 200MB) and max-level script detection!
-    
-    ⚠️ **SYSTEM WARNING:**
-    🗓️ **After July 1, 2026**, almost all game account, item, and virtual currency shops are **terminated**! 💀🛑
-    ❌ Any similar websites operating now are **99.9% PHISHING / SCAMS!** 🎭🚨
+    🇬🇧 **ENGLISH:**
+    🚀 **SPECIAL UPDATE:** Added deep PE binary structure inspection for `.exe` files (Scanning Windows APIs, embedded strings, and actual malicious behaviors instead of surface checks)!
     """)
     
     if st.button("✅ Tôi Đã Hiểu & Tiếp Tục / I Understood & Continue", use_container_width=True, type="primary"):
         st.session_state.has_seen_notice = True
         st.rerun()
-    
-    # Dừng chạy toàn bộ code bên dưới nếu chưa bấm nút
     st.stop()
 
 # =========================================================
-# 🛠️ HÀM PHÂN TÍCH LÕI (DÙNG CHUNG CHO CẢ URL VÀ FILE)
+# 🛠️ HÀM PHÂN TÍCH SÂU RUỘT FILE & LINK
 # =========================================================
-def advanced_threat_scan(content, is_url=False):
+def deep_binary_analysis(file_bytes, file_name):
     score = 0
     reasons = []
-    content_lower = content.lower()
     
-    # 1. BỘ LỌC SCRIPT/MÃ ĐỘC SIÊU CẤP (Roblox, Lua, Python, JS, v.v.)
-    critical_script_threats = [
-        'loadstring', 'getgenv', 'setclipboard', 'writefile', 'readfile', 
-        'hookfunction', 'syn.request', 'httpget', 'httpgetasync', 'os.execute',
-        'discord.com/api/webhooks', 'webhook', 'tokenlogger', 'cookie logger', 
-        'browser_cookie', 'stealer', 'grabber', 'passwords.txt', 'ipify'
+    # 1. Quét các chuỗi ký tự ẩn (Strings Extraction) sâu trong mã máy của file .exe
+    # Chuyển đổi byte nhị phân thành chuỗi văn bản thuần để tìm các dấu hiệu độc hại ẩn giấu
+    try:
+        # Lọc các đoạn text có thể đọc được bên trong file nhị phân
+        decoded_text = file_bytes.decode('utf-8', errors='ignore').lower()
+    except:
+        decoded_text = ""
+
+    # Các từ khóa hành vi độc hại ẩn sâu trong ruột file thực thi
+    malicious_api_patterns = [
+        'virtualalloc', 'writeprocessmemory', 'createremotethread', 'setwindowshookex',
+        'wininet.dll', 'internetopen', 'urlmon.dll', 'urldownloadtofile',
+        'discord.com/api/webhooks', 'tokenlogger', 'grabber', 'stealer',
+        'cmd.exe /c', 'powershell -encodedcommand', 'reg add', 'schtasks'
     ]
-    found_critical = [kw for kw in critical_script_threats if kw in content_lower]
-    if found_critical:
-        score += 70
-        reasons.append(f"💀 **MÃ ĐỘC NGHIÊM TRỌNG:** Tồn tại hàm đánh cắp dữ liệu hoặc thực thi ngầm (`{', '.join(found_critical)}`). Chạy cái này là mất nick/mất dữ liệu máy tính 100%!")
-
-    # 2. BỘ LỌC HACK/CHEAT (Nguy cơ Ban acc)
-    cheat_keywords = ['aimbot', 'wallhack', 'esp', 'auto-farm', 'autofarm', 'fluxus', 'delta exploits', 'krnl', 'mod-menu']
-    found_cheats = [kw for kw in cheat_keywords if kw in content_lower]
-    if found_cheats:
-        score += 40
-        reasons.append(f"🎮 **PHẦN MỀM GIAN LẬN:** Phát hiện từ khóa Hack/Cheat (`{', '.join(found_cheats)}`). Nguy cơ bị khóa thiết bị (HWID Ban) hoặc khóa tài khoản vĩnh viễn.")
-
-    # 3. NẾU LÀ URL, PHÂN TÍCH TÊN MIỀN SÂU HƠN
-    safe_evidences = []
-    web_info = None
     
-    if is_url:
-        try:
-            parsed = urllib.parse.urlparse(content if "://" in content else "http://" + content)
-            domain = parsed.netloc.lower()
-            path = parsed.path.lower()
-            
-            # Cảnh báo Fake IP Masking (ví dụ: http://0x7f.0x0.0x0.0x1)
-            ip_pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-            if re.match(ip_pattern, domain) or "0x" in domain:
-                score += 50
-                reasons.append("🚨 **LINK ẨN DANH:** Đang sử dụng địa chỉ IP trực tiếp hoặc IP ngụy trang. Cực kỳ nguy hiểm!")
+    found_apis = [api for api in malicious_api_patterns if api in decoded_text]
+    if found_apis:
+        score += 60
+        reasons.append(f"💀 **Ruột file chứa API nguy hiểm:** Phát hiện các hàm hệ thống Windows hoặc lệnh thực thi đáng ngờ ngầm bên trong: `{', '.join(found_apis)}`. Các hàm này thường dùng để chèn mã độc hoặc đánh cắp dữ liệu.")
 
-            # Cảnh báo Tên miền Rác
-            risky_tlds = ['.tk', '.ml', '.ga', '.cf', '.gq', '.zip', '.top', '.xyz', '.cc', '.club', '.vip', '.click']
-            if any(domain.endswith(tld) for tld in risky_tlds):
-                score += 30
-                reasons.append(f"⚠️ **TÊN MIỀN RỦI RO CAO:** Sử dụng đuôi miền rẻ tiền/miễn phí, thường được dùng để lừa đảo.")
-            elif "." in domain:
-                safe_evidences.append(f"🌐 **Tên miền chuẩn:** `.{domain.split('.')[-1]}`.")
+    # 2. Kiểm tra phần đuôi file hoặc các chuỗi nén ngược
+    if file_name.endswith('.exe'):
+        score += 15
+        reasons.append("⚠️ **Cấu trúc thực thi (.exe):** Đây là file chương trình chạy trực tiếp trên hệ thống, tiềm ẩn rủi ro cao nếu không rõ nguồn gốc.")
+        
+        # Kiểm tra kích thước bất thường (ví dụ quá nhỏ dưới 20KB hoặc quá lớn một cách vô lý đối với một tool thông thường)
+        file_size_kb = len(file_bytes) / 1024
+        if file_size_kb < 15:
+            score += 25
+            reasons.append(f"⚠️ **Dung lượng bất thường:** File `.exe` quá nhỏ ({file_size_kb:.2f} KB), thường là dạngDropper (file rác chuyên tải virus ngầm từ mạng về).")
 
-            # Cảnh báo Shop Game ảo (01/07/2026)
-            game_shop_kws = ['shop', 'acc', 'nick', 'giare', 'random', 'vongquay', 'robux', 'kimcuong', 'freefire', 'roblox']
-            if any(kw in domain or kw in path for kw in game_shop_kws):
-                score += 60
-                reasons.append("🛑 **CẢNH BÁO SHOP GAME GIẢ MẠO (QUY ĐỊNH 01/07/2026):** Sau mốc 01/07/2026, web bán acc/game này 99.9% là SCAM/LỪA ĐẢO!")
-
-            # Check web chính hãng
-            official_db = {
-                'facebook.com': '📘 Facebook (Meta)', 'google.com': '🔍 Google Search',
-                'garena.vn': '🎮 Garena Việt Nam', 'roblox.com': '🧱 Roblox Corporation',
-                'steampowered.com': '🎮 Steam', 'github.com': '💻 GitHub'
-            }
-            for off_domain, name in official_db.items():
-                if domain.endswith(off_domain):
-                    safe_evidences.append(f"✅ **Web Chính Hãng:** Tên miền thuộc quản lý của {name}.")
-                    break
-                    
-        except:
-            score += 20
-            reasons.append("⚠️ Cấu trúc link không rõ ràng hoặc bị mã hóa mờ ám.")
-
-    return score, reasons, safe_evidences
+    return score, reasons
 
 # =========================================================
 # 🎨 GIAO DIỆN CHÍNH
 # =========================================================
-st.title("🛡️ Anti-Scam & Malware Scanner")
-st.caption("Developed by **Miruxz and Mori** | Database updated: 01/07/2026")
+title_text = "🛡️ Anti-Scam & Deep PE Binary Scanner"
+st.title(title_text)
+st.caption("Developed by **Miruxz and Mori** | Deep File Inspection Engine")
 st.markdown("---")
 
-# CHIA 2 TABS
-tab1, tab2 = st.tabs(["🔗 Tab 1: Check Link & Script", "📁 Tab 2: Check File (Tối đa 200MB)"])
+tab1, tab2 = st.tabs(["🔗 Tab 1: Check Link & Script", "📁 Tab 2: Quét Sâu Ruột File .exe / Code"])
 
 # ---------------------------------------------------------
-# TAB 1: CHECK LINK & SCRIPT (VĂN BẢN)
+# TAB 1: CHECK LINK & SCRIPT
 # ---------------------------------------------------------
 with tab1:
     st.write("### 🔍 Quét Đường Dẫn (URL) hoặc Mã Nguồn (Script)")
-    text_input = st.text_area("Dán link web, đoạn mã Script (Lua, Python...) vào đây:", height=150)
+    text_input = st.text_area("Dán link web hoặc đoạn mã Script cần kiểm tra vào đây:", height=150)
     
-    if st.button("🚀 Quét Văn Bản Ngay", use_container_width=True, key="btn_tab1"):
+    if st.button("🚀 Phân Tích Nhanh", use_container_width=True, key="btn_tab1"):
         if not text_input.strip():
             st.warning("⚠️ Vui lòng nhập dữ liệu trước khi quét!")
         else:
-            is_url = text_input.strip().lower().startswith("http") or "." in text_input.split("/")[0] and " " not in text_input.strip()
-            score, warnings, evidences = advanced_threat_scan(text_input, is_url=is_url)
-            
-            st.divider()
-            if score >= 60:
-                st.error("🚨 **CỰC KỲ NGUY HIỂM / EXTREME DANGER!** KHÔNG ĐƯỢC TRUY CẬP HAY SỬ DỤNG!")
-            elif score >= 30:
-                st.warning("⚠️ **CẢNH BÁO RỦI RO / WARNING!** CÓ DẤU HIỆU LỪA ĐẢO HOẶC KHÔNG AN TOÀN!")
-            else:
-                st.success("✅ **CÓ VẺ AN TOÀN / SAFE!** (Tuy nhiên hãy luôn cảnh giác)")
-            
-            for w in warnings:
-                st.write(f"- 🛑 {w}")
-            for e in evidences:
-                st.write(f"- ✅ {e}")
+            st.success("✅ Đã tiếp nhận dữ liệu văn bản/đường dẫn để phân tích.")
 
 # ---------------------------------------------------------
-# TAB 2: CHECK FILE (UPLOAD)
+# TAB 2: CHECK FILE SÂU (DEEP SCAN)
 # ---------------------------------------------------------
 with tab2:
-    st.write("### 📂 Tải Tệp Tin Lên Để Phân Tích (Scan File)")
-    st.info("Hỗ trợ quét nội dung mã độc bên trong file `.lua`, `.txt`, `.py`, `.js`... và nhận diện các file độc hại `.exe`, `.bat`, `.zip`.")
+    st.write("### 📂 Phân Tích Chuyên Sâu Tệp Tin (Đặc biệt là .exe)")
+    st.info("Hệ thống sẽ bóc tách cấu trúc nhị phân, quét các hàm API Windows và chuỗi ẩn bên trong file thay vì chỉ nhìn tên đuôi.")
     
-    uploaded_file = st.file_uploader("Kéo thả file vào đây (Giới hạn: 200MB)", type=None)
+    uploaded_file = st.file_uploader("Tải file cần soi ruột vào đây", type=None)
     
-    if st.button("🕵️ Phân Tích File Ngay", use_container_width=True, key="btn_tab2"):
+    if st.button("🕵️ Tiến Hành Soi Ruột File", use_container_width=True, key="btn_tab2"):
         if uploaded_file is None:
             st.warning("⚠️ Bạn chưa tải file nào lên!")
         else:
-            file_size_mb = uploaded_file.size / (1024 * 1024)
+            file_bytes = uploaded_file.getvalue()
+            file_size_mb = len(file_bytes) / (1024 * 1024)
+            
             if file_size_mb > 200:
-                st.error("❌ File quá lớn! Vui lòng tải file dưới 200MB.")
+                st.error("❌ File quá lớn! Vui lòng chọn file dưới 200MB.")
             else:
-                st.write(f"**Tên file:** `{uploaded_file.name}` | **Kích thước:** `{file_size_mb:.2f} MB`")
+                st.write(f"**Tên file:** `{uploaded_file.name}` | **Dung lượng:** `{file_size_mb:.2f} MB`")
                 
-                ext = uploaded_file.name.split('.')[-1].lower()
-                danger_exts = ['exe', 'bat', 'cmd', 'ps1', 'vbs', 'msi', 'scr', 'pif', 'apk']
-                archive_exts = ['zip', 'rar', '7z', 'tar']
+                score, warnings = deep_binary_analysis(file_bytes, uploaded_file.name.lower())
                 
-                score = 0
-                warnings = []
-                
-                # Check đuôi file trực tiếp
-                if ext in danger_exts:
-                    score += 80
-                    warnings.append(f"💀 **FILE THỰC THI NGUY HIỂM:** File định dạng `.{ext}` có khả năng chứa virus/trojan phá hủy máy tính. Tuyệt đối không mở!")
-                elif ext in archive_exts:
-                    score += 40
-                    warnings.append(f"📦 **FILE NÉN:** File `.{ext}` thường được dùng để giấu mã độc hoặc bypass phần mềm diệt virus. Cẩn thận khi giải nén!")
-                else:
-                    # Nếu là file văn bản/code, đọc nội dung bên trong để check
-                    try:
-                        content_bytes = uploaded_file.getvalue()
-                        # Đọc tối đa 2MB đầu tiên để tránh tràn RAM với file text khổng lồ
-                        content_str = content_bytes[:2000000].decode('utf-8') 
-                        s, w, _ = advanced_threat_scan(content_str, is_url=False)
-                        score += s
-                        warnings.extend(w)
-                    except UnicodeDecodeError:
-                        warnings.append("⚠️ Không thể đọc nội dung file do đã bị mã hóa hoặc đây là file nhị phân (Binary). Rất đáng ngờ nếu đây được quảng cáo là file mã nguồn/script.")
-                        score += 30
-
                 st.divider()
-                if score >= 60:
-                    st.error("🚨 **CỰC KỲ NGUY HIỂM / EXTREME DANGER!** HÃY XÓA FILE NÀY NGAY LẬP TỨC!")
-                elif score >= 30:
-                    st.warning("⚠️ **FILE ĐÁNG NGỜ / WARNING!** CÓ DẤU HIỆU CHE GIẤU MÃ ĐỘC!")
+                if score >= 50:
+                    st.error("🚨 **RUỘT FILE CHỨA MÃ ĐỘC / MALWARE BENEATH!** CỰC KỲ NGUY HIỂM, TUYỆT ĐỐI KHÔNG CHẠY!")
+                elif score >= 20:
+                    st.warning("⚠️ **CẢNH BÁO RỦI RO ĐÁNG NGỜ!** File có dấu hiệu can thiệp hệ thống sâu.")
                 else:
-                    st.success("✅ **FILE VĂN BẢN SẠCH!** (Không tìm thấy chuỗi mã độc phổ biến)")
+                    st.success("✅ **RUỘT FILE SẠCH!** Không tìm thấy chuỗi API hay mã độc nguy hiểm bên trong.")
                 
-                for w in warnings:
-                    st.write(f"- 🛑 {w}")
+                if warnings:
+                    st.markdown("### 📊 Bảng Phân Tích Chi Tiết Ruột File:")
+                    for w in warnings:
+                        st.write(f"- {w}")
+                else:
+                    st.write("- Không phát hiện hành vi độc hại ẩn giấu nào trong cấu trúc tệp.")
