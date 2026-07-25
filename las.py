@@ -205,7 +205,7 @@ tab1, tab2 = st.tabs(["🔗 Check Link / URL / Script", "📁 Check File"])
 # ---------------------------------------------------------
 with tab1:
     st.write("### 🔍 Check Link / URL / Script")
-    st.info("💡 Hệ thống quét sâu: Phát hiện web 18+, cá độ, tài xỉu, link fake và lừa đảo ăn cắp tài khoản.")
+    st.info("💡 Mọi người có thể sử dụng tính năng này, nhưng mình không khuyến khích truy cập các liên kết lạ. Xin lỗi vì sự bất tiện này nhé!")
     text_input = st.text_area("Dán link, URL hoặc script vào đây:", height=150)
     
     if st.button("🚀 Kiểm Tra Ngay", use_container_width=True, key="btn_tab1"):
@@ -231,7 +231,7 @@ with tab1:
 # ---------------------------------------------------------
 with tab2:
     st.write("### 📂 Check File")
-    st.info("💡 Bot AI DeepScan V7 quét chuyên sâu cấu trúc PE, API độc hại và loại trừ các trình cài đặt gốc.")
+    st.info("💡 Mọi người có thể sử dụng, nhưng mình không khuyến khích tải các tệp không rõ nguồn gốc. Xin lỗi mọi người vì sự bất tiện này nhé!")
     
     uploaded_file = st.file_uploader("Tải file cần check:", type=None)
     
