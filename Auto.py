@@ -22,51 +22,71 @@ st.markdown(
 )
 
 
-async def verify_oauth_token(token: str):
-  # Sử dụng Client-ID công khai chính thống của Twitch Web Player
+async def get_twitch_user_via_cookie(auth_token: str):
   headers = {
-      "Authorization": f"Bearer {token}",
+      "Authorization": f"OAuth {auth_token}",
       "Client-Id": "kimne78kx3ncx6brgo4mv6wbc5en1a",
+      "Content-Type": "application/json",
   }
+
+  query = [
+      {
+          "operationName": "CurrentUser",
+          "variables": {},
+          "extensions": {
+              "persistedQuery": {
+                  "version": 1,
+                  "sha256Hash": (
+                      "5b172462943f65e2365bb5f7b49fe53ee52a92634f19b4a45371c6b141444983"
+                  ),
+              }
+          },
+      }
+  ]
+
+  url = "https://gql.twitch.tv/gql"
   async with aiohttp.ClientSession() as session:
-    async with session.get(
-        "https://api.twitch.tv/helix/users", headers=headers
-    ) as resp:
+    async with session.post(url, json=query, headers=headers) as resp:
       if resp.status == 200:
-        data = await resp.json()
-        if data.get("data"):
-          return data["data"][0]
+        results = await resp.json()
+        for res in results:
+          data = res.get("data", {})
+          if "currentUser" in data and data["currentUser"]:
+            return data["currentUser"]
       return None
 
 
 st.title("⚡ Auto Farm Channel Point")
-st.markdown("Hệ thống tự động quét và kết nối luồng farm điểm kênh.")
+st.markdown("Hệ thống quét và kết nối luồng farm điểm qua Cookie Token.")
 
 with st.sidebar:
   st.header("⚙️ Cấu hình hệ thống")
   token_input = st.text_input(
-      "Nhập OAuth Token",
+      "Nhập Access Token (auth-token)",
       type="password",
-      placeholder="Dán OAuth Token vào đây...",
+      placeholder="Dán mã auth-token từ F12...",
   )
   start_btn = st.button("🚀 Khởi động Tiến trình Farm", type="primary")
   st.markdown("---")
-  st.info("Trạng thái: Sẵn sàng kết nối Local.")
+  st.info("Trạng thái: Sẵn sàng kết nối Web.")
 
 if start_btn:
   if not token_input:
     st.error("⚠️ Vui lòng nhập Token!")
   else:
-    with st.spinner("Đang xác thực thông tin tài khoản Twitch..."):
-      user_info = asyncio.run(verify_oauth_token(token_input))
+    with st.spinner("Đang xác thực Cookie Token với Twitch..."):
+      user_info = asyncio.run(get_twitch_user_via_cookie(token_input))
 
       if not user_info:
         st.error(
-            "❌ Token không hợp lệ hoặc sai định dạng. Vui lòng kiểm tra lại!"
+            "❌ Token không hợp lệ hoặc đã hết hạn. Hãy F5 lại Twitch và lấy"
+            " lại auth-token mới nhất!"
         )
       else:
-        username = user_info.get("display_name")
-        st.success(f"✅ Kết nối thành công tài khoản: **{username}**")
+        username = user_info.get("displayName")
+        st.success(
+            f"✅ Kết nối thành công tài khoản chuẩn Cookie: **{username}**"
+        )
 
         st.markdown("---")
         st.subheader("📡 Tiến trình Farm Kênh Thực Tế")
@@ -87,4 +107,4 @@ if start_btn:
               unsafe_allow_html=True,
           )
 else:
-  st.info("👉 Hãy nhập Token và bấm **Khởi động Tiến trình Farm**.")
+  st.info("👉 Hãy dán `auth-token` và bấm **Khởi động Tiến trình Farm**.")
