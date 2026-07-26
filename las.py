@@ -46,10 +46,8 @@ if "has_seen_notice" not in st.session_state:
 
 if not st.session_state.has_seen_notice:
     st.error("### 🚀 THÔNG BÁO NÂNG CẤP HỆ THỐNG")
-    st.info("""
-    🇻🇳 **VIETNAMESE:**
-    Trang web hiện đang trong quá trình cập nhật hệ thống nhằm nâng cao chất lượng dịch vụ, quét sâu và tối ưu hóa bộ lọc bảo mật tối đa cho người dùng! 
-    Mong mọi người thông cảm và chờ đợi thêm một chút xíu nữa thôi, quá trình update sẽ hoàn tất trong thời gian sớm nhất nhé! ❤️✨
+    st.info(""")
+   
     
     ⚠️ **CẢNH BÁO:**
     🗓️ **Sau ngày 01/07/2026**, các shop kinh doanh tài khoản, vật phẩm game gần như **đã bị khai tử**! 💀🛑
