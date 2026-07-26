@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Farm Channel Point - Twitch</title>
+    <style>
+        body { background-color: #0e0e10; color: #efeff1; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #18181b; border: 1px solid #2f2f35; padding: 30px; border-radius: 10px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 10px; margin: 10px 0 20px 0; background: #0e0e10; border: 1px solid #2f2f35; color: white; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #9146ff; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #772ce8; }
+        #result { margin-top: 15px; font-size: 14px; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>⚡ Twitch Auth Tool</h2>
+    <p>Nhập auth-token từ trình duyệt của bạn:</p>
+    <input type="password" id="tokenInput" placeholder="Dán mã auth-token vào đây...">
+    <button onclick="checkToken()">Kiểm tra & Kết nối</button>
+    <div id="result"></div>
+</div>
+
+<script>
+async function checkToken() {
+    const token = document.getElementById('tokenInput').value.trim();
+    const resultDiv = document.getElementById('result');
+    
+    if (!token) {
+        resultDiv.innerHTML = "<span style='color: #eb0400;'>⚠️ Vui lòng nhập token!</span>";
+        return;
+    }
+
+    resultDiv.innerHTML = "Đang kết nối tới Twitch...";
+
+    try {
+        const response = await fetch('https://gql.twitch.tv/gql', {
+            method: 'POST',
+            headers: {
+                'Authorization': `OAuth ${token}`,
+                'Client-Id': 'kimne78kx3ncx6brgo4mv6wbc5en1a',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([{
+                "operationName": "CurrentUser",
+                "variables": {},
+                "extensions": {
+                    "persistedQuery": {
+                        "version": 1,
+                        "sha256Hash": "5b172462943f65e2365bb5f7b49fe53ee52a92634f19b4a45371c6b141444983"
+                    }
+                }
+            }])
+        });
+
+        const data = await response.json();
+        const user = data[0]?.data?.currentUser;
+
+        if (user) {
+            resultDiv.innerHTML = `<span style='color: #00ff7f;'>✅ Thành công! Xin chào: <b>${user.displayName}</b></span>`;
+        } else {
+            resultDiv.innerHTML = `<span style='color: #eb0400;'>❌ Token không hợp lệ hoặc đã hết hạn!</span>`;
+        }
+    } catch (error) {
+        resultDiv.innerHTML = `<span style='color: #eb0400;'>❌ Lỗi kết nối mạng: ${error.message}</span>`;
+    }
+}
+</script>
+
+</body>
+</html>
