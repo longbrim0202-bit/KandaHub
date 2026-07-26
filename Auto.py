@@ -23,14 +23,12 @@ st.markdown(
 
 
 async def get_user_and_streams_via_gql(auth_token: str):
-  # Sử dụng GraphQL API nội bộ của Twitch thông qua auth-token của trình duyệt
   headers = {
       "Authorization": f"OAuth {auth_token}",
-      "Client-ID": "kimne78kx3ncx6brgo4mv6wbc5en1a",  # Client-ID chính thức của Twitch Web Player
+      "Client-Id": "kimne78kx3ncx6brgo4mv6wbc5en1a",
       "Content-Type": "application/json",
   }
 
-  # Truy vấn GraphQL để lấy thông tin user và các kênh đang live mà user đang theo dõi
   query = [
       {
           "operationName": "CurrentUser",
@@ -62,12 +60,10 @@ async def get_user_and_streams_via_gql(auth_token: str):
   async with aiohttp.ClientSession() as session:
     async with session.post(url, json=query, headers=headers) as resp:
       if resp.status == 200:
-        data = await resp.json()
-        return data
+        return await resp.json()
       return None
 
 
-# --- GIAO DIỆN CHÍNH ---
 st.title("⚡ Auto Farm Channel Point")
 st.markdown(
     "Hệ thống tự động quét, bám đuổi livestream và cày điểm kênh thật."
@@ -92,7 +88,10 @@ if start_btn:
       results = asyncio.run(get_user_and_streams_via_gql(token_input))
 
       if not results:
-        st.error("❌ Không thể kết nối tới Twitch. Vui lòng kiểm tra lại token!")
+        st.error(
+            "❌ Không thể kết nối tới Twitch. Vui lòng kiểm tra lại đường mạng"
+            " hoặc Token!"
+        )
       else:
         user_info = None
         streams = []
