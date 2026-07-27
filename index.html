@@ -2,74 +2,1003 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Auto Farm Channel Point - Twitch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanda Hub - Dashboard</title>
+    <!-- Icon của web (Favicon) -->
+    <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBlsTH4IhSTAABDf7fVHJc7vsawsk2CMCa6ifYYVZMug&s=10">
+    <!-- Google Fonts Dynamic Import -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@400;700&family=Permanent+Marker&family=Press+Start+2P&family=Rubik:wght@400;700&family=Ubuntu:wght@400;700&family=VT323&family=Cinzel:wght@400;700&family=Creepster&family=Fira+Code:wght@400;700&family=Fredoka:wght@400;700&family=Luckiest+Guy&family=Orbitron:wght@400;700&family=Pacifico&family=Russo+One&family=Share+Tech+Mono&family=Special+Elite&family=Staatliches&family=UnifrakturMaguntia&family=Silkscreen&display=swap" rel="stylesheet">
+    <!-- Particles.js CDN -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
-        body { background-color: #0e0e10; color: #efeff1; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #18181b; border: 1px solid #2f2f35; padding: 30px; border-radius: 10px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 10px; margin: 10px 0 20px 0; background: #0e0e10; border: 1px solid #2f2f35; color: white; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #9146ff; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #772ce8; }
-        #result { margin-top: 15px; font-size: 14px; word-break: break-all; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0c0c0e;
+            background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Thanh tuỳ chỉnh nền góc trên bên phải */
+        .bg-customizer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+            font-size: 13px;
+        }
+        .bg-customizer select, .bg-customizer input {
+            background: #09090b;
+            color: #fff;
+            border: 1px solid #27272a;
+            padding: 5px 8px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        .bg-customizer select:focus, .bg-customizer input:focus {
+            border-color: #38bdf8;
+        }
+
+        .sidebar, .main-content {
+            position: relative;
+            z-index: 1;
+        }
+        .sidebar {
+            width: 260px;
+            background-color: rgba(24, 24, 27, 0.85);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid #27272a;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 10px;
+        }
+        
+        .sidebar-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #27272a;
+        }
+        .sidebar-profile img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #38bdf8;
+            margin-bottom: 8px;
+        }
+        .sidebar-profile .profile-subtitle {
+            font-size: 12px;
+            color: #a1a1aa;
+            margin-bottom: 2px;
+        }
+        .sidebar-profile .profile-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .sidebar-profile .verified-badge {
+            color: #38bdf8;
+            font-size: 14px;
+        }
+        .sidebar-profile .profile-role {
+            font-size: 12px;
+            color: #4ade80;
+            margin-top: 2px;
+        }
+
+        .sidebar-title {
+            color: #71717a;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            text-transform: uppercase;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            color: #a1a1aa;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .menu-item:hover, .menu-item.active {
+            background-color: #27272a;
+            color: #ffffff;
+        }
+        .menu-item.active {
+            background-color: #3f3f46;
+            color: #38bdf8;
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            text-align: center;
+            font-size: 13px;
+            color: #71717a;
+        }
+        .sidebar-footer span {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-color: rgba(9, 9, 11, 0.75);
+            backdrop-filter: blur(10px);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .intro-box {
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 65px;
+            border-left: 4px solid #38bdf8;
+        }
+        .typing-cursor {
+            display: inline-block;
+            background-color: #38bdf8;
+            width: 8px;
+            height: 15px;
+            margin-left: 4px;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .client-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .client-card {
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .client-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .client-name {
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .client-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 3px;
+        }
+        .client-version {
+            font-size: 12px;
+            color: #71717a;
+        }
+        
+        .status-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-badge.working {
+            background-color: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        .status-badge.detected {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .working .status-dot { background-color: #4ade80; box-shadow: 0 0 6px #4ade80; }
+        .detected .status-dot { background-color: #ef4444; box-shadow: 0 0 6px #ef4444; }
+
+        .client-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .btn-download {
+            background-color: #3f3f46;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-download:hover {
+            background-color: #52525b;
+        }
+        
+        /* Roblox Version Tab Styles & Notification Popup */
+        .roblox-version-container {
+            max-width: 900px;
+        }
+        .roblox-version-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .roblox-version-table th, .roblox-version-table td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid #27272a;
+            font-size: 14px;
+        }
+        .roblox-version-table th {
+            background-color: #18181b;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+        .roblox-version-table tr:hover {
+            background-color: rgba(39, 39, 42, 0.5);
+        }
+        .roblox-version-table tr:last-child td {
+            border-bottom: none;
+        }
+        .version-tag {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .arch-badge {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Update Notification Popup Banner */
+        #update-banner {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, #18181b, #27272a);
+            border: 2px solid #38bdf8;
+            padding: 18px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            z-index: 10000;
+            max-width: 380px;
+            animation: slideInUp 0.4s ease-out;
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        #update-banner h4 {
+            color: #38bdf8;
+            font-size: 16px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #update-banner p {
+            font-size: 13px;
+            color: #a1a1aa;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .banner-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-update-now {
+            background-color: #38bdf8;
+            color: #000;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .btn-update-now:hover { background-color: #0ea5e9; }
+        .btn-close-banner {
+            background-color: #3f3f46;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .script-container {
+            max-width: 800px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 15px;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .search-box button {
+            padding: 12px 20px;
+            background-color: #38bdf8;
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .search-box button:hover {
+            background-color: #0ea5e9;
+        }
+        .script-card {
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .script-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #38bdf8;
+        }
+        .script-game {
+            font-size: 12px;
+            color: #a1a1aa;
+            margin-bottom: 10px;
+        }
+        .script-code-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #09090b;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #27272a;
+        }
+        .script-code-box code {
+            color: #4ade80;
+            font-size: 13px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 600px;
+        }
+        .btn-copy {
+            background: #3f3f46;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-copy:hover {
+            background: #52525b;
+        }
+        
+        .ttf-container {
+            max-width: 1000px;
+        }
+        .font-search-box {
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .font-search-flex {
+            display: flex;
+            gap: 10px;
+        }
+        .font-search-flex input {
+            flex: 1;
+            padding: 10px 15px;
+            background: #09090b;
+            border: 1px solid #27272a;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 15px;
+        }
+        .font-search-flex input:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .ttf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .ttf-card {
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #27272a;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .ttf-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+        .ttf-desc {
+            font-size: 13px;
+            color: #a1a1aa;
+            margin-bottom: 15px;
+        }
+        .ttf-sample-text {
+            font-size: 20px;
+            color: #4ade80;
+            margin-bottom: 15px;
+            min-height: 35px;
+            word-break: break-all;
+        }
+        .btn-ttf-download {
+            display: block;
+            background-color: #38bdf8;
+            color: #000;
+            text-align: center;
+            text-decoration: none;
+            padding: 8px 0;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .btn-ttf-download:hover {
+            background-color: #0ea5e9;
+        }
     </style>
 </head>
-<body>
+<body id="page-body">
 
-<div class="card">
-    <h2>⚡ Twitch Auth Tool</h2>
-    <p>Nhập auth-token từ trình duyệt của bạn:</p>
-    <input type="password" id="tokenInput" placeholder="Dán mã auth-token vào đây...">
-    <button onclick="checkToken()">Kiểm tra & Kết nối</button>
-    <div id="result"></div>
-</div>
-
-<script>
-async function checkToken() {
-    const token = document.getElementById('tokenInput').value.trim();
-    const resultDiv = document.getElementById('result');
-    
-    if (!token) {
-        resultDiv.innerHTML = "<span style='color: #eb0400;'>⚠️ Vui lòng nhập token!</span>";
-        return;
-    }
-
-    resultDiv.innerHTML = "Đang kết nối tới Twitch...";
-
-    try {
-        // Sử dụng corsproxy công khai để lách lỗi CORS trên trình duyệt
-        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://gql.twitch.tv/gql');
+    <div class="bg-customizer">
+        <label for="bg-type-select">🎨 Nền:</label>
+        <select id="bg-type-select" onchange="changeBackgroundType(this.value)">
+            <option value="image" selected>Ảnh tùy chỉnh</option>
+            <option value="particles">Hiệu ứng hạt</option>
+            <option value="color">Màu đơn</option>
+        </select>
         
-        const response = await fetch(proxyUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': `OAuth ${token}`,
-                'Client-Id': 'kimne78kx3ncx6brgo4mv6wbc5en1a',
-                'Content-Type': 'application/json'
+        <div id="bg-color-picker-wrapper" style="display: none;">
+            <input type="color" id="bg-color-input" value="#121212" onchange="changeBackgroundColor(this.value)" title="Chọn màu nền">
+        </div>
+
+        <div id="bg-image-input-wrapper">
+            <input type="text" id="bg-image-url-input" placeholder="Dán link ảnh vào đây..." value="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop" style="width: 180px;" onchange="changeBackgroundImage(this.value)">
+        </div>
+    </div>
+
+    <div id="particles-js"></div>
+
+    <!-- UPDATE NOTIFICATION POPUP -->
+    <div id="update-banner">
+        <h4>🚀 PHÁT HIỆN BẢN RBX MỚI!</h4>
+        <p id="update-banner-text">Hệ thống weao.xyz vừa phát hiện phiên bản Roblox mới nhất. Hãy cập nhật ngay!</p>
+        <div class="banner-actions">
+            <button class="btn-update-now" onclick="goToRobloxTab()">XEM NGAY</button>
+            <button class="btn-close-banner" onclick="closeUpdateBanner()">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-profile">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvwlgR3QpHcvV8qJ3lDdSDik7WanlEB5HpyVKGiglp2Q&s" alt="Kanda Hub Avatar">
+            <div class="profile-subtitle">Hi, I am</div>
+            <div class="profile-name-wrapper">
+                <span>Kanda Hub</span>
+                <span class="verified-badge">✔</span>
+            </div>
+            <div class="profile-role">Top 1 Hacker</div>
+        </div>
+
+        <div class="sidebar-title">CHÍNH</div>
+        <div class="menu-item active" onclick="switchTab('executors', this)">
+            📁 EXECUTORS
+        </div>
+        <div class="menu-item" onclick="switchTab('roblox-version', this)">
+            🚀 ROBLOX VERSION
+        </div>
+        <div class="menu-item" onclick="switchTab('fonts', this)">
+            🔤 KHO FONT
+        </div>
+        
+        <div class="sidebar-title" style="margin-top: 15px;">KHO SCRIPT</div>
+        <div class="menu-item" onclick="switchTab('scripts', this)">
+            🔍 TÌM KIẾM SCRIPT
+        </div>
+
+        <div class="sidebar-footer">
+            DEVELOPER: <span>MIRUXZ & MORI</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <!-- EXECUTORS TAB -->
+        <div id="executors" class="tab-content active">
+            <h2>DANH SÁCH EXECUTORS</h2>
+            <div class="intro-box" id="typing-intro">
+                <span id="typing-text"></span><span class="typing-cursor"></span>
+            </div>
+            <div class="client-grid" id="client-grid"></div>
+        </div>
+
+        <!-- ROBLOX VERSION TAB -->
+        <div id="roblox-version" class="tab-content">
+            <h2>ROBLOX VERSION (WEAO SOURCE)</h2>
+            <div class="intro-box" style="margin-bottom: 20px;">
+                Cập nhật phiên bản Roblox client mới nhất trích xuất từ weao.xyz. Hệ thống sẽ tự động đối chiếu và thông báo ngay khi có bản cập nhật mới.
+            </div>
+            <div class="roblox-version-container">
+                <table class="roblox-version-table">
+                    <thead>
+                        <tr>
+                            <th>PHIÊN BẢN</th>
+                            <th>KIẾN TRÚC</th>
+                            <th>NGÀY CẬP NHẬT</th>
+                            <th>THAO TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roblox-version-tbody">
+                        <!-- Data loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FONTS TAB -->
+        <div id="fonts" class="tab-content">
+            <h2>KHO FONT CHỮ (ROBLOX, MINECRAFT, GOTHIC)</h2>
+            <div class="intro-box" style="margin-bottom: 15px;">
+                Tổng hợp các font chữ độc đáo bao gồm phong cách Minecraft, Gothic cổ điển và Roblox. Nhập tên font hoặc thay đổi văn bản mẫu để xem trước!
+            </div>
+            <div class="ttf-container">
+                <div class="font-search-box">
+                    <div class="font-search-flex">
+                        <input type="text" id="live-search-input" placeholder="NHẬP TÊN FONT (VD: Minecraft, Gothic, Bebas)..." oninput="filterFonts()">
+                    </div>
+                    <input type="text" id="global-preview-input" placeholder="NHẬP VĂN BẢN MẪU ĐỂ XEM TRƯỚC..." value="Kanda Hub Roblox UI" oninput="updateLivePreviews()" style="width: 100%; padding: 10px 15px; background: #09090b; border: 1px solid #27272a; border-radius: 6px; color: #fff; font-size: 14px;">
+                </div>
+                <div class="ttf-grid" id="ttf-grid"></div>
+            </div>
+        </div>
+
+        <!-- SCRIPTS TAB -->
+        <div id="scripts" class="tab-content">
+            <h2>TÌM KIẾM SCRIPT TRỰC TIẾP</h2>
+            <div class="script-container">
+                <div class="search-box">
+                    <input type="text" id="game-search-input" placeholder="NHẬP TÊN GAME (VD: BLOX FRUITS)..." onkeypress="handleKeyPress(event)">
+                    <button onclick="fetchScripts()">TÌM KIẾM</button>
+                </div>
+                <div id="script-results">
+                    <p style="color: #71717a;">NHẬP TÊN GAME VÀ BẤM TÌM KIẾM ĐỂ HIỂN THỊ SCRIPT TẠI ĐÂY.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let pJSInstance = particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#38bdf8" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.4, "random": false },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#38bdf8", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
             },
-            body: JSON.stringify([{
-                "operationName": "CurrentUser",
-                "variables": {},
-                "extensions": {
-                    "persistedQuery": {
-                        "version": 1,
-                        "sha256Hash": "5b172462943f65e2365bb5f7b49fe53ee52a92634f19b4a45371c6b141444983"
-                    }
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } },
+                    "push": { "particles_nb": 4 }
                 }
-            }])
+            },
+            "retina_detect": true
         });
 
-        const data = await response.json();
-        const user = data[0]?.data?.currentUser;
+        function changeBackgroundType(type) {
+            const particlesEl = document.getElementById('particles-js');
+            const bodyEl = document.getElementById('page-body');
+            const colorPickerWrapper = document.getElementById('bg-color-picker-wrapper');
+            const imageInputWrapper = document.getElementById('bg-image-input-wrapper');
 
-        if (user) {
-            resultDiv.innerHTML = `<span style='color: #00ff7f;'>✅ Thành công! Xin chào: <b>${user.displayName}</b></span>`;
-        } else {
-            resultDiv.innerHTML = `<span style='color: #eb0400;'>❌ Token không hợp lệ hoặc đã hết hạn!</span>`;
+            bodyEl.style.backgroundColor = '#0c0c0e';
+            particlesEl.style.display = 'none';
+            colorPickerWrapper.style.display = 'none';
+            imageInputWrapper.style.display = 'none';
+
+            if (type === 'particles') {
+                particlesEl.style.display = 'block';
+                bodyEl.style.backgroundImage = 'none';
+            } else if (type === 'color') {
+                colorPickerWrapper.style.display = 'block';
+                bodyEl.style.backgroundImage = 'none';
+                bodyEl.style.backgroundColor = document.getElementById('bg-color-input').value;
+            } else if (type === 'image') {
+                imageInputWrapper.style.display = 'block';
+                const imgUrl = document.getElementById('bg-image-url-input').value;
+                if (imgUrl) {
+                    bodyEl.style.backgroundImage = `url('${imgUrl}')`;
+                    bodyEl.style.backgroundSize = 'cover';
+                    bodyEl.style.backgroundPosition = 'center';
+                    bodyEl.style.backgroundAttachment = 'fixed';
+                }
+            }
         }
-    } catch (error) {
-        resultDiv.innerHTML = `<span style='color: #eb0400;'>❌ Lỗi kết nối mạng: ${error.message}</span>`;
-    }
-}
-</script>
 
+        function changeBackgroundColor(color) {
+            document.getElementById('page-body').style.backgroundColor = color;
+        }
+
+        function changeBackgroundImage(url) {
+            if (url) {
+                const bodyEl = document.getElementById('page-body');
+                bodyEl.style.backgroundImage = `url('${url}')`;
+                bodyEl.style.backgroundSize = 'cover';
+                bodyEl.style.backgroundPosition = 'center';
+                bodyEl.style.backgroundAttachment = 'fixed';
+            }
+        }
+
+        const introMessage = "ĐÂY LÀ KANDA HUB DO MIRUXZ VÀ MORI PHÁT TRIỂN. NƠI ĐÂY CÓ NHỮNG EXECUTOR VÀ SCRIPT TỐT NHẤT CHO BẠN.";
+        let charIndex = 0;
+        function typeWriter() {
+            if (charIndex < introMessage.length) {
+                document.getElementById("typing-text").innerHTML += introMessage.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 30);
+            }
+        }
+
+        // Roblox Versions Data (Tích hợp bản chuẩn từ Weao)
+        const robloxVersionsData = [
+            { version: "version-ed2b47b81f0484a", arch: "Windows x64", date: "7/26/2026", link: "https://setup.rbxcdn.com/version-ed2b47b81f0484a-RobloxPlayerInstaller.exe" },
+            { version: "version-2d8b5c1a4e9f3102", arch: "x64 (PC)", date: "Trước đó", link: "https://setup.rbxcdn.com/version-2d8b5c1a4e9f3102-RobloxPlayerInstaller.exe" }
+        ];
+
+        function renderRobloxVersions() {
+            const tbody = document.getElementById('roblox-version-tbody');
+            tbody.innerHTML = '';
+            robloxVersionsData.forEach((item) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="version-tag">${item.version}</span></td>
+                        <td><span class="arch-badge">${item.arch}</span></td>
+                        <td style="color: #a1a1aa;">${item.date}</td>
+                        <td>
+                            <button class="btn-download" onclick="copyRobloxLink('${item.link}', this)">COPY LINK TẢI</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function copyRobloxLink(url, btn) {
+            navigator.clipboard.writeText(url);
+            const originalText = btn.innerText;
+            btn.innerText = "ĐÃ COPY!";
+            btn.style.backgroundColor = "#4ade80";
+            btn.style.color = "#000";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = "#3f3f46";
+                btn.style.color = "#fff";
+            }, 1500);
+        }
+
+        // Tự động kiểm tra và thông báo phiên bản mới ngầm từ Weao API/Proxy
+        async function checkWeaoVersionUpdate() {
+            try {
+                // Gọi API check weao.xyz (hoặc giả lập quét tự động thời gian thực)
+                const res = await fetch('https://weao.xyz/api/version/window', { cache: 'no-store' }).catch(() => null);
+                if (res && res.ok) {
+                    const data = await res.json();
+                    const latestVersion = data.version || data.guid;
+                    if (latestVersion && latestVersion !== robloxVersionsData[0].version) {
+                        // Phát hiện phiên bản mới!
+                        showUpdateBanner(latestVersion);
+                    }
+                }
+            } catch (e) {
+                // Sử dụng cơ chế kiểm tra tự động nền định kỳ
+            }
+        }
+
+        function showUpdateBanner(newVer) {
+            document.getElementById('update-banner-text').innerText = `Đã tìm thấy phiên bản Roblox mới (${newVer}) từ weao.xyz!`;
+            document.getElementById('update-banner').style.display = 'block';
+        }
+
+        function closeUpdateBanner() {
+            document.getElementById('update-banner').style.display = 'none';
+        }
+
+        function goToRobloxTab() {
+            closeUpdateBanner();
+            const robloxTabBtn = document.querySelectorAll('.menu-item')[1];
+            switchTab('roblox-version', robloxTabBtn);
+        }
+
+        window.onload = function() {
+            typeWriter();
+            renderFonts(ttfFontsData);
+            renderRobloxVersions();
+            // Chạy kiểm tra tự động sau khi load web
+            setTimeout(checkWeaoVersionUpdate, 3000);
+            // Kiểm tra tự động mỗi 5 phút
+            setInterval(checkWeaoVersionUpdate, 300000);
+        };
+
+        const clientsData = [
+          { "name": "MADIUM EXECUTOR", "version": "V1.0", "platform": "PC", "link": "https://gofile.io/d/w92hs4", "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQVNFqMIpb7zMZyOjnb44R_ZqDxBRj1GL_SlRgpNXYD8dopFt", "status": "working" },
+          { "name": "CODE X", "version": "V2.729", "platform": "MOBILE", "link": "https://www.mediafire.com/file/vk46d8d9qwiz4ik/Codex+v2.729.840.apk/file", "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggd5nh-yMUVkaPmt1NnFhMCb56_jzKTdyZ6i7oGxnWw&s=10", "status": "working" },
+          { "name": "REAL EXECUTOR", "version": "V1.0", "platform": "PC", "link": "https://pulse.alphagridnexus7.lol/Real_Executor_Latest.zip?c=AJ_nZmoEhwUAXFgCAFZOFwASAAAAAABC&s=362244", "icon": "https://realexecutor.com/assets/images/favicon.png", "status": "working" },
+          { "name": "VELOCITY", "version": "V1.0", "platform": "PC", "link": "https://gofile.io/d/6HAQxH", "icon": "https://getvelocity.org/wp-content/uploads/2025/02/velocity-executor-logo.png", "status": "working" },
+          { "name": "SOLARA", "version": "V1.5.2", "platform": "PC", "link": "https://bstlar.com/3u9/getsolara2", "icon": "https://solaraexecutor.com/wp-content/webp-express/webp-images/uploads/2024/05/logo.png.webp", "status": "working" },
+          { "name": "XENO", "version": "V1.0", "platform": "PC", "link": "#", "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHKl7W958N7B4HYs97Yx9ZIUrZAAiLAV7-OXf4BgkETA&s=10", "status": "working" },
+          { "name": "NEXOMIA", "version": "V1.0", "platform": "PC", "link": "https://gofile.io/d/J8DWo4", "icon": "https://via.placeholder.com/40", "status": "working" },
+          { "name": "DELTA X QUỐC TẾ", "version": "V2.729", "platform": "MOBILE", "link": "https://delta-executor.com/deltaexploit/", "icon": "https://delta-executor.com/favicon.ico", "status": "working" },
+          { "name": "DELTA X VNG", "version": "V2.729", "platform": "MOBILE", "link": "https://deltaexecutor.filesadda.com/Delta%20VNG%20V727.apk", "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", "status": "working" }
+        ];
+
+        const gridContainer = document.getElementById('client-grid');
+        clientsData.forEach(client => {
+            const isWorking = client.status === "working";
+            const statusClass = isWorking ? "working" : "detected";
+            const statusText = isWorking ? "WORKING" : "DETECTED (BAN WAVE)";
+
+            gridContainer.innerHTML += `
+                <div class="client-card">
+                    <div class="client-info">
+                        <img src="${client.icon}" alt="${client.name}">
+                        <div>
+                            <div class="client-name">${client.name}</div>
+                            <div class="client-meta">
+                                <span class="client-version">${client.platform} • ${client.version}</span>
+                                <span class="status-badge ${statusClass}">
+                                    <span class="status-dot"></span> ${statusText}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="client-actions">
+                        <a href="${client.link}" class="btn-download" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">TẢI</a>
+                    </div>
+                </div>
+            `;
+        });
+
+        const ttfFontsData = [
+          { "name": "Minecraft (Pixelated)", "family": "'Silkscreen', monospace", "desc": "Font chữ khối vuông phong cách game Minecraft.", "filename": "Minecraft.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/silkscreen/Silkscreen-Regular.ttf" },
+          { "name": "Gothic (Unifraktur)", "family": "'UnifrakturMaguntia', cursive", "desc": "Font chữ Gothic cổ điển đậm chất ma mị, sắc sảo.", "filename": "GothicClassic.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/unifractur/unifraktormaguntia/UnifrakturMaguntia-Regular.ttf" },
+          { "name": "Bebas Neue", "family": "'Bebas Neue', sans-serif", "desc": "Font chữ tiêu đề đậm và hiện đại.", "filename": "BebasNeue.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/bebasneue/BebasNeue-Regular.ttf" },
+          { "name": "Permanent Marker", "family": "'Permanent Marker', cursive", "desc": "Font viết tay phong cách nghệ thuật.", "filename": "PermanentMarker.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/permanentmarker/PermanentMarker-Regular.ttf" },
+          { "name": "JetBrains Mono", "family": "'JetBrains Mono', monospace", "desc": "Font lập trình, hiển thị số liệu siêu nét.", "filename": "JetBrainsMono.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono-Regular.ttf" },
+          { "name": "Ubuntu Bold", "family": "'Ubuntu', sans-serif", "desc": "Font chữ bo tròn thân thiện cho UI.", "filename": "UbuntuBold.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/ubuntu/Ubuntu-Bold.ttf" },
+          { "name": "Montserrat", "family": "'Montserrat', sans-serif", "desc": "Font giao diện cực kỳ sang trọng.", "filename": "Montserrat-Bold.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/montserrat/Montserrat-Bold.ttf" },
+          { "name": "Rubik", "family": "'Rubik', sans-serif", "desc": "Font chữ hiện đại, tối ưu cho game mobile.", "filename": "Rubik-Bold.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/rubik/Rubik-Bold.ttf" },
+          { "name": "VT323 (Retro 8-Bit)", "family": "'VT323', monospace", "desc": "Font máy tính cổ điển thập niên 80.", "filename": "VT323-Regular.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/vt323/VT323-Regular.ttf" },
+          { "name": "Inter", "family": "'Inter', sans-serif", "desc": "Font quốc dân cực đẹp cho mọi loại UI.", "filename": "Inter-Regular.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/inter/Inter%5Bopsz,wght%5D.ttf" },
+          { "name": "Orbitron", "family": "'Orbitron', sans-serif", "desc": "Font phong cách viễn tưởng sci-fi tương lai.", "filename": "Orbitron-Regular.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/orbitron/Orbitron%5Bwght%5D.ttf" },
+          { "name": "Russo One", "family": "'Russo One', sans-serif", "desc": "Font tiêu đề mạnh mẽ, cứng cáp cho game hành động.", "filename": "RussoOne-Regular.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/russoone/RussoOne-Regular.ttf" },
+          { "name": "Fredoka", "family": "'Fredoka', sans-serif", "desc": "Font chữ hoạt hình bầu bĩnh dễ thương.", "filename": "Fredoka.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/fredoka/Fredoka%5Bwdth,wght%5D.ttf" },
+          { "name": "Luckiest Guy", "family": "'Luckiest Guy', cursive", "desc": "Font chữ hoạt hình ngộ nghĩnh, nổi bật.", "filename": "LuckiestGuy.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/luckiestguy/LuckiestGuy-Regular.ttf" },
+          { "name": "Cinzel", "family": "'Cinzel', serif", "desc": "Font chữ cổ điển phong cách thần thoại La Mã.", "filename": "Cinzel.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/cinzel/Cinzel%5Bwght%5D.ttf" },
+          { "name": "Creepster", "family": "'Creepster', cursive", "desc": "Font chữ kinh dị rùng rợn chuyên cho game ma.", "filename": "Creepster.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/creepster/Creepster-Regular.ttf" },
+          { "name": "Fira Code", "family": "'Fira Code', monospace", "desc": "Font code chuyên dụng cho lập trình viên Roblox.", "filename": "FiraCode.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/firacode/FiraCode%5Bwght%5D.ttf" },
+          { "name": "Pacifico", "family": "'Pacifico', cursive", "desc": "Font chữ uốn lượn phong cách viết tay mềm mại.", "filename": "Pacifico.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/pacifico/Pacifico-Regular.ttf" },
+          { "name": "Share Tech Mono", "family": "'Share Tech Mono', monospace", "desc": "Font màn hình hacker điện tử cực chất.", "filename": "ShareTechMono.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/sharetechmono/ShareTechMono-Regular.ttf" },
+          { "name": "Special Elite", "family": "'Special Elite', cursive", "desc": "Font kiểu máy đánh chữ cổ điển độc đáo.", "filename": "SpecialElite.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/specialelite/SpecialElite-Regular.ttf" },
+          { "name": "Staatliches", "family": "'Staatliches', cursive", "desc": "Font chữ in hoa poster hiện đại, cá tính.", "filename": "Staatliches.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/staatliches/Staatliches-Regular.ttf" },
+          { "name": "Press Start 2P", "family": "'Press Start 2P', monospace", "desc": "Font chữ pixel game 8-bit thùng máy cổ.", "filename": "PressStart2P.ttf", "sampleUrl": "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" }
+        ];
+
+        const ttfGrid = document.getElementById('ttf-grid');
+
+        function renderFonts(data) {
+            ttfGrid.innerHTML = '';
+            if (data.length === 0) {
+                ttfGrid.innerHTML = '<p style="color: #ef4444;">Không tìm thấy font chữ phù hợp!</p>';
+                return;
+            }
+            data.forEach((font, index) => {
+                ttfGrid.innerHTML += `
+                    <div class="ttf-card">
+                        <div>
+                            <div class="ttf-name">${font.name}</div>
+                            <div class="ttf-desc">${font.desc}</div>
+                            <div class="ttf-sample-text" id="sample-${index}" style="font-family: ${font.family};">Kanda Hub Roblox UI</div>
+                        </div>
+                        <div>
+                            <a href="${font.sampleUrl}" class="btn-ttf-download" download="${font.filename}" target="_blank">TẢI FILE .TTF</a>
+                        </div>
+                    </div>
+                `;
+            });
+            updateLivePreviews();
+        }
+
+        function filterFonts() {
+            const keyword = document.getElementById('live-search-input').value.toLowerCase();
+            const filtered = ttfFontsData.filter(font => font.name.toLowerCase().includes(keyword));
+            renderFonts(filtered);
+        }
+
+        function updateLivePreviews() {
+            const text = document.getElementById('global-preview-input').value || "Kanda Hub Roblox UI";
+            const sampleElements = document.querySelectorAll('.ttf-sample-text');
+            sampleElements.forEach(el => {
+                el.innerText = text;
+            });
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                fetchScripts();
+            }
+        }
+
+        async function fetchScripts() {
+            const query = document.getElementById('game-search-input').value.trim();
+            const resultsContainer = document.getElementById('script-results');
+
+            if (!query) return;
+
+            resultsContainer.innerHTML = '<p style="color: #38bdf8;">ĐANG TÌM KIẾM SCRIPT...</p>';
+
+            try {
+                const response = await fetch(`https://scriptblox.com/api/script/search?q=${encodeURIComponent(query)}&page=1`);
+                const data = await response.json();
+                const scripts = data.result?.scripts;
+
+                if (!scripts || scripts.length === 0) {
+                    resultsContainer.innerHTML = '<p style="color: #ef4444;">KHÔNG TÌM THẤY SCRIPT NÀO!</p>';
+                    return;
+                }
+
+                resultsContainer.innerHTML = '';
+                scripts.forEach(script => {
+                    resultsContainer.innerHTML += `
+                        <div class="script-card">
+                            <div class="script-title">${script.title}</div>
+                            <div class="script-game">Game: ${script.game?.name || 'Unknown'}</div>
+                            <div class="script-code-box">
+                                <code>loadstring(game:HttpGet("${script.script}"))()</code>
+                                <button class="btn-copy" onclick="navigator.clipboard.writeText('loadstring(game:HttpGet(\\\x22${script.script}\\\x22))()'); alert('Đã copy script!');">COPY</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                resultsContainer.innerHTML = '<p style="color: #ef4444;">LỖI KẾT NỐI API!</p>';
+            }
+        }
+    </script>
 </body>
 </html>
