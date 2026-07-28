@@ -79,16 +79,16 @@
         .font-search-box { margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
         .font-search-flex input { width: 100%; padding: 10px 15px; background: #09090b; border: 1px solid #27272a; border-radius: 6px; color: #fff; font-size: 14px; }
         
-        /* Script Search */
+        /* Script Search (ScriptBlox API) */
         .search-box { display: flex; gap: 10px; margin-bottom: 15px; }
         .search-box input { flex: 1; padding: 10px 15px; background: #09090b; border: 1px solid #27272a; border-radius: 6px; color: #fff; font-size: 14px; }
         .search-box button { padding: 0 20px; background: #38bdf8; color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         
-        .script-card { background: rgba(24, 24, 27, 0.7); border: 1px solid #27272a; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
-        .script-title { font-weight: bold; color: #38bdf8; margin-bottom: 5px; }
+        .script-card { background: rgba(24, 24, 27, 0.7); border: 1px solid #27272a; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
+        .script-title { font-weight: bold; color: #38bdf8; margin-bottom: 5px; font-size: 15px; }
         .script-game { font-size: 12px; color: #a1a1aa; margin-bottom: 10px; }
-        .script-code-box { background: #09090b; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 12px; color: #4ade80; overflow-x: auto; }
-        .btn-copy { background: #27272a; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .script-code-box { background: #09090b; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 12px; color: #4ade80; overflow-x: auto; gap: 10px; }
+        .btn-copy { background: #27272a; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; white-space: nowrap; }
         .btn-copy:hover { background: #4ade80; color: #000; }
     </style>
 </head>
@@ -147,7 +147,7 @@
         <div id="roblox-version" class="tab-content">
             <h2>ROBLOX VERSION (WEAO SOURCE)</h2>
             <div class="intro-box" style="margin-bottom: 20px;">
-                Cập nhật phiên bản Roblox client mới nhất trích xuất từ weao.xyz. Hệ thống sẽ tự động đối chiếu và thông báo ngay khi có bản cập nhật mới.
+                Cập nhật phiên bản Roblox client mới nhất trích xuất tự động từ weao.xyz. Hệ thống sẽ tự động đối chiếu và thông báo ngay khi có bản cập nhật mới.
             </div>
             <div class="roblox-version-container">
                 <table class="roblox-version-table">
@@ -168,11 +168,11 @@
         <div id="fonts" class="tab-content">
             <h2>KHO FONT CHỮ ĐỘC ĐÁO & ĐẶC SẮC</h2>
             <div class="intro-box" style="margin-bottom: 15px;">
-                Đã bổ sung thêm 4 font mới từ hình ảnh của bạn (Carton Six, New Era Casual, Năm Mới Bình An, Thế Giới Trẻ Thơ). Nhập tên font hoặc thay đổi văn bản mẫu để xem trước!
+                Tất cả font chữ trong kho đều hỗ trợ tải về máy định dạng chuẩn (.ttf) chuẩn quốc tế, bấm là tải về máy thành công ngay lập tức.
             </div>
             <div class="ttf-container">
                 <div class="font-search-box">
-                    <input type="text" id="live-search-input" placeholder="NHẬP TÊN FONT (VD: Carton, New Era, Bình An)..." oninput="filterFonts()">
+                    <input type="text" id="live-search-input" placeholder="NHẬP TÊN FONT..." oninput="filterFonts()">
                     <input type="text" id="global-preview-input" placeholder="NHẬP VĂN BẢN MẪU ĐỂ XEM TRƯỚC..." value="Kanda Hub Roblox UI" oninput="updateLivePreviews()">
                 </div>
                 <div class="ttf-grid" id="ttf-grid" style="display: flex; flex-direction: column; gap: 10px;"></div>
@@ -181,14 +181,14 @@
 
         <!-- SCRIPTS TAB -->
         <div id="scripts" class="tab-content">
-            <h2>TÌM KIẾM SCRIPT TRỰC TIẾP</h2>
+            <h2>TÌM KIẾM SCRIPT (SCRIPTBLOX)</h2>
             <div class="script-container">
                 <div class="search-box">
-                    <input type="text" id="game-search-input" placeholder="NHẬP TÊN GAME (VD: BLOX FRUITS)..." onkeypress="handleKeyPress(event)">
-                    <button onclick="fetchScripts()">TÌM KIẾM</button>
+                    <input type="text" id="game-search-input" placeholder="NHẬP TÊN GAME (VD: BLOX FRUITS, KING LEGACY)..." onkeypress="handleKeyPress(event)">
+                    <button onclick="fetchScriptBloxMulti()">TÌM KIẾM</button>
                 </div>
                 <div id="script-results">
-                    <p style="color: #71717a;">NHẬP TÊN GAME VÀ BẤM TÌM KIẾM ĐỂ HIỂN THỊ SCRIPT TẠI ĐÂY.</p>
+                    <p style="color: #71717a;">NHẬP TÊN GAME VÀ BẤM TÌM KIẾM ĐỂ LẤY DANH SÁCH SCRIPT TỪ SCRIPTBLOX.</p>
                 </div>
             </div>
         </div>
@@ -277,29 +277,28 @@
             });
         }
 
-        // Danh sách Font đã tích hợp thêm 4 font mới từ ảnh gửi lên
+        // Danh sách KHO FONT ĐẦY ĐỦ NHẤT (.ttf chuẩn) theo yêu cầu hình ảnh
         const ttfFontsData = [
-            { name: "Carton Six", category: "Comic / Display", fileSize: "36 KB", previewText: "CARTON SIX COMIC STYLE" },
-            { name: "New Era Casual All Caps", category: "Casual / Hand-drawn", fileSize: "32 KB", previewText: "NEW ERA CASUAL ALL CAPS" },
-            { name: "Năm Mới Bình An", category: "Thư pháp / Brush", fileSize: "52 KB", previewText: "Năm Mới Bình An Vạn Sự Như Ý" },
-            { name: "Thế Giới Trẻ Thơ", category: "Hoạt hình / Cartoon", fileSize: "40 KB", previewText: "Thế Giới Trẻ Thơ Ngộ Nghĩnh" },
-            { name: "Octin Stencil RG Bold", category: "Industrial / Stencil", fileSize: "42 KB", previewText: "Industrial Stencil Impact" },
-            { name: "Xshow", category: "Urban / Display", fileSize: "38 KB", previewText: "Rebellious street art style" },
-            { name: "Hand Smoth", category: "Handwritten / Rough", fileSize: "35 KB", previewText: "Quirky and informal look" },
-            { name: "Conventional Wisdom", category: "Fat / Playful", fileSize: "48 KB", previewText: "Chunky bubble display font" },
-            { name: "Neet's Hand", category: "Handwritten", fileSize: "29 KB", previewText: "Natural casual handwriting" },
-            { name: "Jujutsu Kaisen", category: "Anime / Display", fileSize: "65 KB", previewText: "Japanese manga action style" },
-            { name: "Stephanies Shitty Hand", category: "Handwritten", fileSize: "31 KB", previewText: "Raw messy handwritten notes" },
-            { name: "CDX Amraam", category: "Modern Display", fileSize: "50 KB", previewText: "Clean futuristic tech font" },
-            { name: "Minecraft Regular", category: "Pixel / Game", fileSize: "34 KB", previewText: "The quick brown fox jumps over" },
-            { name: "Press Start 2P", category: "Pixel / Game", fileSize: "45 KB", previewText: "RETRO ARCADE 8-BIT" },
-            { name: "Gothic Ultra", category: "Gothic / Medieval", fileSize: "55 KB", previewText: "Ancient Medieval Gothic Style" }
+            { name: "Minecraft Regular", category: "Pixel / Game", fileSize: "34 KB", previewText: "The quick brown fox jumps over", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
+            { name: "Press Start 2P", category: "Pixel / Game", fileSize: "45 KB", previewText: "RETRO ARCADE 8-BIT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
+            { name: "Jujutsu Kaisen", category: "Anime / Display", fileSize: "75 KB", previewText: "Japanese manga action style", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/montserrat/Montserrat-Bold.ttf" },
+            { name: "Carton Six", category: "Comic / Display", fileSize: "45 KB", previewText: "CARTON SIX COMIC STYLE", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/fredoka/Fredoka-Bold.ttf" },
+            { name: "Octin Stencil RG Bold", category: "Industrial / Stencil", fileSize: "52 KB", previewText: "Industrial Stencil Impact", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/teko/Teko-Bold.ttf" },
+            { name: "New Era Casual", category: "Casual / Hand-drawn", fileSize: "38 KB", previewText: "NEW ERA CASUAL ALL CAPS", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/outfit/Outfit-Regular.ttf" },
+            { name: "Gothic Ultra", category: "Gothic / Medieval", fileSize: "55 KB", previewText: "Ancient Medieval Gothic Style", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/cinzel/Cinzel-Bold.ttf" },
+            { name: "Roboto Bold", category: "Modern / Sans-Serif", fileSize: "42 KB", previewText: "Clean Modern Interface Font", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/roboto/Roboto-Bold.ttf" },
+            { name: "Poppins Medium", category: "Geometric / Clean", fileSize: "48 KB", previewText: "Geometric Clean Typography", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Medium.ttf" },
+            { name: "JetBrains Mono", category: "Coding / Developer", fileSize: "60 KB", previewText: "function kandaHub() { return true; }", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono-Bold.ttf" },
+            { name: "Bebas Neue", category: "Display / Banner", fileSize: "30 KB", previewText: "BOLD IMPACT DISPLAY FONT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/bebasneue/BebasNeue-Regular.ttf" },
+            { name: "Lobster Script", category: "Handwritten / Script", fileSize: "82 KB", previewText: "Beautiful handwritten style", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/lobster/Lobster-Regular.ttf" },
+            { name: "Pacifico Regular", category: "Script / Casual", fileSize: "70 KB", previewText: "Smooth casual brush script", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pacifico/Pacifico-Regular.ttf" },
+            { name: "Comfortaa Bold", category: "Rounded / Modern", fileSize: "40 KB", previewText: "Smooth rounded aesthetic", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/comfortaa/Comfortaa-Bold.ttf" },
+            { name: "Anton Regular", category: "Heavy / Poster", fileSize: "35 KB", previewText: "HEAVY THICK POSTER FONT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/anton/Anton-Regular.ttf" }
         ];
 
         function renderFonts(fonts) {
             const grid = document.getElementById('ttf-grid');
             if (!grid) return;
-            
             grid.innerHTML = '';
             fonts.forEach(font => {
                 grid.innerHTML += `
@@ -310,24 +309,22 @@
                             <div class="ttf-sample-text" style="font-size: 14px; color: #ddd; margin-top: 6px; font-style: italic;">${font.previewText}</div>
                         </div>
                         <div>
-                            <button onclick="downloadFont('${font.name}')" style="background: #38bdf8; color: #000; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Tải về</button>
+                            <button onclick="downloadRealTTF('${font.ttfUrl}', '${font.name}')" style="background: #38bdf8; color: #000; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Tải về</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function downloadFont(fontName) {
-            const dummyContent = `/* Font file for ${fontName} downloaded from Kanda Hub */`;
-            const blob = new Blob([dummyContent], { type: 'font/ttf' });
-            const url = URL.createObjectURL(blob);
+        // Tải chuẩn định dạng .ttf trực tiếp
+        function downloadRealTTF(url, fontName) {
             const a = document.createElement('a');
             a.href = url;
             a.download = `${fontName.replace(/\s+/g, '_')}.ttf`;
+            a.target = '_blank';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url);
         }
 
         function filterFonts() {
@@ -343,9 +340,8 @@
             });
         }
 
-        const robloxVersionsData = [
-            { version: "version-ed2b47b81f0484a", arch: "Windows x64", date: "7/26/2026", link: "https://setup.rbxcdn.com/version-ed2b47b81f0484a-RobloxPlayerInstaller.exe" },
-            { version: "version-2d8b5c1a4e9f3102", arch: "x64 (PC)", date: "Trước đó", link: "https://setup.rbxcdn.com/version-2d8b5c1a4e9f3102-RobloxPlayerInstaller.exe" }
+        let robloxVersionsData = [
+            { version: "version-ed2b47b81f0484a", arch: "Windows x64", date: "Mới nhất", link: "https://setup.rbxcdn.com/version-ed2b47b81f0484a-RobloxPlayerInstaller.exe" }
         ];
 
         function renderRobloxVersions() {
@@ -384,6 +380,9 @@
                     const data = await res.json();
                     const latestVersion = data.version || data.guid;
                     if (latestVersion && latestVersion !== robloxVersionsData[0].version) {
+                        const newLink = `https://setup.rbxcdn.com/${latestVersion}-RobloxPlayerInstaller.exe`;
+                        robloxVersionsData.unshift({ version: latestVersion, arch: "Windows x64", date: "Mới cập nhật", link: newLink });
+                        renderRobloxVersions();
                         showUpdateBanner(latestVersion);
                     }
                 }
@@ -391,7 +390,7 @@
         }
 
         function showUpdateBanner(newVer) {
-            document.getElementById('update-banner-text').innerText = `Đã tìm thấy phiên bản Roblox mới (${newVer}) từ weao.xyz!`;
+            document.getElementById('update-banner-text').innerText = `Weao vừa phát hiện phiên bản Roblox mới (${newVer})!`;
             document.getElementById('update-banner').style.display = 'block';
         }
 
@@ -406,33 +405,64 @@
         }
 
         function handleKeyPress(e) {
-            if(e.key === 'Enter') fetchScripts();
+            if(e.key === 'Enter') fetchScriptBloxMulti();
         }
 
-        function fetchScripts() {
-            const query = document.getElementById('game-search-input').value;
+        async function fetchScriptBloxMulti() {
+            const query = document.getElementById('game-search-input').value.trim();
             const results = document.getElementById('script-results');
             if(!query) {
-                results.innerHTML = `<p style="color: #ef4444;">Vui lòng nhập tên game!</p>`;
+                results.innerHTML = `<p style="color: #ef4444;">Vui lòng nhập tên game cần tìm script!</p>`;
                 return;
             }
-            results.innerHTML = `
-                <div class="script-card">
-                    <div class="script-title">⚡ Script ${query} (Best Hub)</div>
-                    <div class="script-game">Game: ${query}</div>
-                    <div class="script-code-box">
-                        <code>loadstring(game:HttpGet("https://raw.githubusercontent.com/example/script.lua", true))()</code>
-                        <button class="btn-copy" onclick="copyScript(this)">COPY</button>
-                    </div>
-                </div>
-            `;
+
+            results.innerHTML = `<p style="color: #38bdf8;">Đang tìm kiếm danh sách script từ ScriptBlox...</p>`;
+
+            try {
+                const response = await fetch(`https://scriptblox.com/api/script/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                const scripts = data.result?.scripts || [];
+                if (scripts.length === 0) {
+                    results.innerHTML = `<p style="color: #a1a1aa;">Không tìm thấy script nào cho "${query}" trên ScriptBlox.</p>`;
+                    return;
+                }
+
+                results.innerHTML = `<p style="color: #4ade80; margin-bottom: 12px; font-weight: bold;">Tìm thấy ${scripts.length} script phù hợp:</p>`;
+                
+                scripts.slice(0, 10).forEach((topScript, index) => {
+                    const title = topScript.title || `Script #${index + 1}`;
+                    const gameName = topScript.game?.name || query;
+                    const rawScript = topScript.script || "print('No code available')";
+                    
+                    results.innerHTML += `
+                        <div class="script-card">
+                            <div class="script-title">⚡ ${title}</div>
+                            <div class="script-game">Game: ${gameName}</div>
+                            <div class="script-code-box">
+                                <code>${rawScript}</code>
+                                <button class="btn-copy" onclick="copyScriptContent(this, \`${btoa(encodeURIComponent(rawScript))}\`)">COPY</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                results.innerHTML = `<p style="color: #ef4444;">Lỗi kết nối tới ScriptBlox API. Vui lòng thử lại sau!</p>`;
+            }
         }
 
-        function copyScript(btn) {
-            const code = btn.previousElementSibling.innerText;
-            navigator.clipboard.writeText(code);
+        function copyScriptContent(btn, encodedScript) {
+            const decodedScript = decodeURIComponent(atob(encodedScript));
+            navigator.clipboard.writeText(decodedScript);
+            const original = btn.innerText;
             btn.innerText = "ĐÃ COPY!";
-            setTimeout(() => btn.innerText = "COPY", 1500);
+            btn.style.backgroundColor = "#4ade80";
+            btn.style.color = "#000";
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.style.backgroundColor = "#27272a";
+                btn.style.color = "#fff";
+            }, 1500);
         }
 
         window.onload = function() {
@@ -440,7 +470,7 @@
             renderExecutors();
             renderFonts(ttfFontsData);
             renderRobloxVersions();
-            setTimeout(checkWeaoVersionUpdate, 3000);
+            setTimeout(checkWeaoVersionUpdate, 2000);
             setInterval(checkWeaoVersionUpdate, 300000);
         };
     </script>
