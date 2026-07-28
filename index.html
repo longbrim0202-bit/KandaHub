@@ -93,6 +93,38 @@
         .script-code-box { background: #09090b; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 12px; color: #4ade80; overflow-x: auto; gap: 10px; }
         .btn-copy { background: #27272a; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; white-space: nowrap; }
         .btn-copy:hover { background: #4ade80; color: #000; }
+
+        /* Online Visitor Widget CSS */
+        .online-visitor-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            padding: 8px 14px;
+            border-radius: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+            font-size: 12px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
+            animation: pulse-dot 1.5s infinite;
+        }
+        @keyframes pulse-dot {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -109,6 +141,12 @@
         </div>
     </div>
 
+    <!-- ONLINE VISITOR WIDGET -->
+    <div class="online-visitor-widget">
+        <div class="online-dot"></div>
+        <span>Đang trực tuyến: <strong id="online-count">58</strong> người</span>
+    </div>
+
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-profile">
@@ -118,7 +156,6 @@
                 <span>Kanda Hub</span>
                 <span class="verified-badge">✔</span>
             </div>
-            <div class="profile-role">Top 1 Hacker</div>
         </div>
 
         <div class="sidebar-title">CHÍNH</div>
@@ -237,7 +274,7 @@
             }
         }
 
-        // Danh sách Executor gốc kèm weaoKey để đồng bộ trạng thái từ API weao.xyz
+        // Danh sách đầy đủ 10 Executor gốc
         let clientsData = [
             { name: "MADIUM EXECUTOR", weaoKey: "madium", version: "V1.0", platform: "PC", link: "https://gofile.io/d/w92hs4", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQVNFqMIpb7zMZyOjnb44R_ZqDxBRj1GL_SlRgpNXYD8dopFt", status: "working", keyType: "keyless" },
             { name: "CODE X", weaoKey: "codex", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/vk46d8d9qwiz4ik/Codex+v2.729.840.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggd5nh-yMUVkaPmt1NnFhMCb56_jzKTdyZ6i7oGxnWw&s=10", status: "detected", keyType: "keysystem" },
@@ -293,7 +330,6 @@
             });
         }
 
-        // Tự động đồng bộ trạng thái Executor từ API weao.xyz
         async function syncExecutorsFromWeao() {
             try {
                 const res = await fetch('https://weao.xyz/api/status/exploits', { cache: 'no-store' }).catch(() => null);
@@ -315,23 +351,23 @@
             } catch (e) {}
         }
 
-        // Kho Font chữ TTF
+        // Kho đầy đủ 15 Font chữ gốc của bạn
         const ttfFontsData = [
-            { name: "Minecraft Regular", category: "Pixel / Game", fileSize: "34 KB", previewText: "The quick brown fox jumps over", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
-            { name: "Press Start 2P", category: "Pixel / Game", fileSize: "45 KB", previewText: "RETRO ARCADE 8-BIT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
-            { name: "Jujutsu Kaisen", category: "Anime / Display", fileSize: "75 KB", previewText: "Japanese manga action style", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/montserrat/Montserrat-Bold.ttf" },
-            { name: "Carton Six", category: "Comic / Display", fileSize: "45 KB", previewText: "CARTON SIX COMIC STYLE", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/fredoka/Fredoka-Bold.ttf" },
-            { name: "Octin Stencil RG Bold", category: "Industrial / Stencil", fileSize: "52 KB", previewText: "Industrial Stencil Impact", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/teko/Teko-Bold.ttf" },
-            { name: "New Era Casual", category: "Casual / Hand-drawn", fileSize: "38 KB", previewText: "NEW ERA CASUAL ALL CAPS", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/outfit/Outfit-Regular.ttf" },
-            { name: "Gothic Ultra", category: "Gothic / Medieval", fileSize: "55 KB", previewText: "Ancient Medieval Gothic Style", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/cinzel/Cinzel-Bold.ttf" },
-            { name: "Roboto Bold", category: "Modern / Sans-Serif", fileSize: "42 KB", previewText: "Clean Modern Interface Font", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/roboto/Roboto-Bold.ttf" },
-            { name: "Poppins Medium", category: "Geometric / Clean", fileSize: "48 KB", previewText: "Geometric Clean Typography", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Medium.ttf" },
-            { name: "JetBrains Mono", category: "Coding / Developer", fileSize: "60 KB", previewText: "function kandaHub() { return true; }", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono-Bold.ttf" },
-            { name: "Bebas Neue", category: "Display / Banner", fileSize: "30 KB", previewText: "BOLD IMPACT DISPLAY FONT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/bebasneue/BebasNeue-Regular.ttf" },
-            { name: "Lobster Script", category: "Handwritten / Script", fileSize: "82 KB", previewText: "Beautiful handwritten style", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/lobster/Lobster-Regular.ttf" },
-            { name: "Pacifico Regular", category: "Script / Casual", fileSize: "70 KB", previewText: "Smooth casual brush script", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pacifico/Pacifico-Regular.ttf" },
-            { name: "Comfortaa Bold", category: "Rounded / Modern", fileSize: "40 KB", previewText: "Smooth rounded aesthetic", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/comfortaa/Comfortaa-Bold.ttf" },
-            { name: "Anton Regular", category: "Heavy / Poster", fileSize: "35 KB", previewText: "HEAVY THICK POSTER FONT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/anton/Anton-Regular.ttf" }
+            { name: "Minecraft Regular", category: "Pixel / Game", fileSize: "34 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
+            { name: "Press Start 2P", category: "Pixel / Game", fileSize: "45 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
+            { name: "Jujutsu Kaisen", category: "Anime / Display", fileSize: "75 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/montserrat/Montserrat-Bold.ttf" },
+            { name: "Carton Six", category: "Comic / Display", fileSize: "45 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/fredoka/Fredoka-Bold.ttf" },
+            { name: "Octin Stencil RG Bold", category: "Industrial / Stencil", fileSize: "52 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/teko/Teko-Bold.ttf" },
+            { name: "New Era Casual", category: "Casual / Hand-drawn", fileSize: "38 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/outfit/Outfit-Regular.ttf" },
+            { name: "Gothic Ultra", category: "Gothic / Medieval", fileSize: "55 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/cinzel/Cinzel-Bold.ttf" },
+            { name: "Roboto Bold", category: "Modern / Sans-Serif", fileSize: "42 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/roboto/Roboto-Bold.ttf" },
+            { name: "Poppins Medium", category: "Geometric / Clean", fileSize: "48 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Medium.ttf" },
+            { name: "JetBrains Mono", category: "Coding / Developer", fileSize: "60 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono-Bold.ttf" },
+            { name: "Bebas Neue", category: "Display / Banner", fileSize: "30 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/bebasneue/BebasNeue-Regular.ttf" },
+            { name: "Lobster Script", category: "Handwritten / Script", fileSize: "82 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/lobster/Lobster-Regular.ttf" },
+            { name: "Pacifico Regular", category: "Script / Casual", fileSize: "70 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pacifico/Pacifico-Regular.ttf" },
+            { name: "Comfortaa Bold", category: "Rounded / Modern", fileSize: "40 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/comfortaa/Comfortaa-Bold.ttf" },
+            { name: "Anton Regular", category: "Heavy / Poster", fileSize: "35 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/anton/Anton-Regular.ttf" }
         ];
 
         function renderFonts(fonts) {
@@ -411,7 +447,6 @@
             }, 1500);
         }
 
-        // Kiểm tra bản cập nhật Roblox tự động từ weao.xyz API
         async function checkWeaoVersionUpdate() {
             try {
                 const res = await fetch('https://weao.xyz/api/version/window', { cache: 'no-store' }).catch(() => null);
@@ -510,6 +545,21 @@
             }, 1500);
         }
 
+        // Widget đếm số lượng người trực tuyến từ 30 đến 70
+        function updateOnlineVisitorCount() {
+            const countEl = document.getElementById('online-count');
+            if (countEl) {
+                let current = parseInt(countEl.innerText);
+                if (isNaN(current)) {
+                    current = Math.floor(Math.random() * 41) + 30; // 30 đến 70
+                } else {
+                    let change = Math.floor(Math.random() * 5) - 2; 
+                    current = Math.min(70, Math.max(30, current + change));
+                }
+                countEl.innerText = current;
+            }
+        }
+
         // Khởi chạy toàn bộ hệ thống khi tải trang xong
         window.onload = function() {
             typeWriter();
@@ -517,11 +567,12 @@
             renderFonts(ttfFontsData);
             renderRobloxVersions();
             
-            // Đồng bộ dữ liệu ngầm từ weao.xyz
+            updateOnlineVisitorCount();
+            setInterval(updateOnlineVisitorCount, 4000);
+
             syncExecutorsFromWeao();
             setTimeout(checkWeaoVersionUpdate, 2000);
 
-            // Đặt lịch tự động làm mới ngầm mỗi 5 phút
             setInterval(syncExecutorsFromWeao, 300000);
             setInterval(checkWeaoVersionUpdate, 300000);
         };
