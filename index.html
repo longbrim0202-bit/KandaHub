@@ -58,6 +58,7 @@
         .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
         .status-badge.working { background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2); }
         .status-badge.detected { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .status-badge.update-needed { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2); }
         .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
         
         .key-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; }
@@ -249,8 +250,17 @@
             if(!gridContainer) return;
             gridContainer.innerHTML = '';
             clientsData.forEach(client => {
-                const statusClass = client.status === 'working' ? 'working' : 'detected';
-                const statusText = client.status === 'working' ? 'WORKING' : 'DETECTED';
+                let statusClass = 'working';
+                let statusText = 'WORKING';
+                
+                if (client.status === 'detected') {
+                    statusClass = 'detected';
+                    statusText = 'DETECTED';
+                } else if (client.status === 'update') {
+                    statusClass = 'update-needed';
+                    statusText = 'CẦN UPDATE';
+                }
+
                 const keyClass = client.keyType === 'keyless' ? 'keyless' : 'keysystem';
                 const keyText = client.keyType === 'keyless' ? 'KEYLESS' : 'KEY-SYSTEM';
                 
@@ -277,7 +287,6 @@
             });
         }
 
-        // Danh sách KHO FONT ĐẦY ĐỦ NHẤT (.ttf chuẩn) theo yêu cầu hình ảnh
         const ttfFontsData = [
             { name: "Minecraft Regular", category: "Pixel / Game", fileSize: "34 KB", previewText: "The quick brown fox jumps over", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
             { name: "Press Start 2P", category: "Pixel / Game", fileSize: "45 KB", previewText: "RETRO ARCADE 8-BIT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
@@ -316,7 +325,6 @@
             });
         }
 
-        // Tải chuẩn định dạng .ttf trực tiếp
         function downloadRealTTF(url, fontName) {
             const a = document.createElement('a');
             a.href = url;
