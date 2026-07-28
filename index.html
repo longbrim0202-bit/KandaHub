@@ -44,27 +44,31 @@
         .typing-cursor { display: inline-block; width: 2px; height: 14px; background: #38bdf8; margin-left: 2px; animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
-        /* Client Grid / Executors */
+        /* Client Grid / Executors - Đã tối ưu hóa chia lưới chuẩn, không tràn chữ sUNC/UNC */
         .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .client-card { background: rgba(24, 24, 27, 0.7); border: 1px solid #27272a; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
+        .client-card { background: rgba(24, 24, 27, 0.7); border: 1px solid #27272a; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; gap: 10px; overflow: hidden; }
         .client-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .client-info { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .client-info img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
-        .client-name { font-weight: bold; font-size: 14px; color: #fff; }
+        .client-info { display: flex; align-items: center; gap: 12px; }
+        .client-info img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+        .client-name { font-weight: bold; font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .client-meta { font-size: 11px; color: #a1a1aa; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; align-items: center; }
         
         /* Badges */
         .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
         .status-badge.working { background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2); }
         .status-badge.detected { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
         
         .key-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; }
         .key-badge.keyless { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
         .key-badge.keysystem { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2); }
 
+        /* Khung chỉ số sUNC và UNC bọc gọn trong card */
+        .unc-stats { background: rgba(15, 23, 42, 0.5); border: 1px solid #27272a; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center; }
+        .unc-stats span b { color: #fff; }
+
         .client-version { font-size: 11px; color: #a1a1aa; }
-        .client-actions { margin-top: 10px; }
+        .client-actions { margin-top: 2px; }
         .btn-download { display: block; width: 100%; text-align: center; background: #27272a; color: #fff; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; transition: 0.2s; }
         .btn-download:hover { background: #38bdf8; color: #000; }
 
@@ -256,16 +260,16 @@
         }
 
         let clientsData = [
-            { name: "MADIUM EXECUTOR", weaoKey: "madium", version: "V1.0", platform: "PC", link: "https://gofile.io/d/w92hs4", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQVNFqMIpb7zMZyOjnb44R_ZqDxBRj1GL_SlRgpNXYD8dopFt", status: "working", keyType: "keyless" },
-            { name: "CODE X", weaoKey: "codex", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/vk46d8d9qwiz4ik/Codex+v2.729.840.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggd5nh-yMUVkaPmt1NnFhMCb56_jzKTdyZ6i7oGxnWw&s=10", status: "detected", keyType: "keysystem" },
-            { name: "REAL EXECUTOR", weaoKey: "real", version: "V1.0", platform: "PC", link: "https://pulse.alphagridnexus7.lol/Real_Executor_Latest.zip?c=AJ_nZmoEhwUAXFgCAFZOFwASAAAAAABC&s=362244", icon: "https://realexecutor.com/assets/images/favicon.png", status: "working", keyType: "keysystem" },
-            { name: "VELOCITY", weaoKey: "velocity", version: "V1.0", platform: "PC", link: "https://gofile.io/d/6HAQxH", icon: "https://getvelocity.org/wp-content/uploads/2025/02/velocity-executor-logo.png", status: "working", keyType: "keysystem" },
-            { name: "SOLARA", weaoKey: "solara", version: "V1.5.2", platform: "PC", link: "https://bstlar.com/3u9/getsolara2", icon: "https://solaraexecutor.com/wp-content/webp-express/webp-images/uploads/2024/05/logo.png.webp", status: "working", keyType: "keyless" },
-            { name: "XENO", weaoKey: "xeno", version: "V1.0", platform: "PC", link: "#", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHKl7W958N7B4HYs97Yx9ZIUrZAAiLAV7-OXf4BgkETA&s=10", status: "working", keyType: "keyless" },
-            { name: "NEXOMIA", weaoKey: "nexomia", version: "V1.0", platform: "PC", link: "https://gofile.io/d/J8DWo4", icon: "https://via.placeholder.com/40", status: "working", keyType: "keyless" },
-            { name: "DELTA X QUỐC TẾ", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://delta-executor.com/deltaexploit/", icon: "https://delta-executor.com/favicon.ico", status: "working", keyType: "keysystem" },
-            { name: "DELTA X VNG", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://deltaexecutor.filesadda.com/Delta%20VNG%20V727.apk", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem" },
-            { name: "DELTA X FIX LAG", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/qjjpk78gzmd0l3y/DELTA_X_2729_FIX_LAG.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem" }
+            { name: "MADIUM EXECUTOR", weaoKey: "madium", version: "V1.0", platform: "PC", link: "https://gofile.io/d/w92hs4", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQVNFqMIpb7zMZyOjnb44R_ZqDxBRj1GL_SlRgpNXYD8dopFt", status: "working", keyType: "keyless", sunc: "100%", unc: "98%" },
+            { name: "CODE X", weaoKey: "codex", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/vk46d8d9qwiz4ik/Codex+v2.729.840.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggd5nh-yMUVkaPmt1NnFhMCb56_jzKTdyZ6i7oGxnWw&s=10", status: "detected", keyType: "keysystem", sunc: "96%", unc: "98%" },
+            { name: "REAL EXECUTOR", weaoKey: "real", version: "V1.0", platform: "PC", link: "https://pulse.alphagridnexus7.lol/Real_Executor_Latest.zip?c=AJ_nZmoEhwUAXFgCAFZOFwASAAAAAABC&s=362244", icon: "https://realexecutor.com/assets/images/favicon.png", status: "working", keyType: "keysystem", sunc: "100%", unc: "99%" },
+            { name: "VELOCITY", weaoKey: "velocity", version: "V1.0", platform: "PC", link: "https://gofile.io/d/6HAQxH", icon: "https://getvelocity.org/wp-content/uploads/2025/02/velocity-executor-logo.png", status: "working", keyType: "keysystem", sunc: "93%", unc: "98%" },
+            { name: "SOLARA", weaoKey: "solara", version: "V1.5.2", platform: "PC", link: "https://bstlar.com/3u9/getsolara2", icon: "https://solaraexecutor.com/wp-content/webp-express/webp-images/uploads/2024/05/logo.png.webp", status: "working", keyType: "keyless", sunc: "46%", unc: "67%" },
+            { name: "XENO", weaoKey: "xeno", version: "V1.0", platform: "PC", link: "#", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHKl7W958N7B4HYs97Yx9ZIUrZAAiLAV7-OXf4BgkETA&s=10", status: "working", keyType: "keyless", sunc: "40%", unc: "84%" },
+            { name: "NEXOMIA", weaoKey: "nexomia", version: "V1.0", platform: "PC", link: "https://gofile.io/d/J8DWo4", icon: "https://via.placeholder.com/40", status: "working", keyType: "keyless", sunc: "90%", unc: "95%" },
+            { name: "DELTA X QUỐC TẾ", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://delta-executor.com/deltaexploit/", icon: "https://delta-executor.com/favicon.ico", status: "working", keyType: "keysystem", sunc: "100%", unc: "99%" },
+            { name: "DELTA X VNG", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://deltaexecutor.filesadda.com/Delta%20VNG%20V727.apk", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem", sunc: "100%", unc: "99%" },
+            { name: "DELTA X FIX LAG", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/qjjpk78gzmd0l3y/DELTA_X_2729_FIX_LAG.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem", sunc: "100%", unc: "99%" }
         ];
 
         function renderExecutors() {
@@ -282,7 +286,7 @@
                     <div class="client-card">
                         <div class="client-info">
                             <img src="${client.icon}" alt="${client.name}" onerror="this.src='https://via.placeholder.com/40'">
-                            <div>
+                            <div style="overflow: hidden; flex: 1;">
                                 <div class="client-name">${client.name}</div>
                                 <div class="client-meta">
                                     <span class="client-version">${client.version} - ${client.platform}</span>
@@ -290,6 +294,10 @@
                                     <span class="key-badge ${keyClass}">${keyText}</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="unc-stats">
+                            <span>sUNC: <b>${client.sunc}</b></span>
+                            <span>UNC: <b>${client.unc}</b></span>
                         </div>
                         <div class="client-actions"><a href="${client.link}" target="_blank" class="btn-download">TẢI VỀ</a></div>
                     </div>
