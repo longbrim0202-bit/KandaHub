@@ -42,7 +42,7 @@
         
         .intro-box { background: rgba(24, 24, 27, 0.6); border: 1px solid #27272a; padding: 15px; border-radius: 8px; font-size: 13px; color: #d4d4d8; margin-bottom: 20px; }
         .typing-cursor { display: inline-block; width: 2px; height: 14px; background: #38bdf8; margin-left: 2px; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
         /* Client Grid / Executors */
         .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
@@ -88,11 +88,16 @@
         .script-code-box { background: #09090b; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 12px; color: #4ade80; overflow-x: auto; gap: 10px; }
         .btn-copy { background: #27272a; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; white-space: nowrap; }
 
-        /* Widgets Container */
+        /* Widgets Container (Bottom-Left) */
         .widgets-container { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
         .widget-box { background: rgba(24, 24, 27, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); padding: 8px 14px; border-radius: 20px; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(8px); font-size: 12px; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); width: fit-content; }
         .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; animation: pulse-dot 1.5s infinite; }
         @keyframes pulse-dot { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+
+        /* API Status Bar Container (Top-Right) */
+        .api-status-container { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 6px; z-index: 1000; }
+        .api-status-box { background: rgba(24, 24, 27, 0.85); border: 1px solid rgba(74, 222, 128, 0.3); padding: 6px 12px; border-radius: 16px; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(8px); font-size: 11px; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); width: fit-content; }
+        .api-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; }
     </style>
 </head>
 <body>
@@ -109,7 +114,23 @@
         </div>
     </div>
 
-    <!-- WIDGETS -->
+    <!-- API STATUS BAR (TOP RIGHT) -->
+    <div class="api-status-container">
+        <div class="api-status-box">
+            <div class="api-dot"></div>
+            <span>API ScriptBlox: <strong style="color: #4ade80;">Working</strong></span>
+        </div>
+        <div class="api-status-box">
+            <div class="api-dot"></div>
+            <span>API Weao: <strong style="color: #4ade80;">Working</strong></span>
+        </div>
+        <div class="api-status-box">
+            <div class="api-dot"></div>
+            <span>Bot Server: <strong style="color: #4ade80;">Working</strong></span>
+        </div>
+    </div>
+
+    <!-- WIDGETS (BOTTOM LEFT) -->
     <div class="widgets-container">
         <div class="widget-box">
             <div class="online-dot"></div>
@@ -444,24 +465,20 @@
             }
         }
 
-        // TỰ ĐỘNG CẬP NHẬT TRẠNG THÁI THỜI TIẾT THỰC TẾ (MƯA, NẮNG, DÔNG, MÂY...)
         async function fetchHaTinhWeather() {
             try {
-                // Lấy thêm mã thời tiết (weather_code) từ API Open-Meteo
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.3430&longitude=105.9056&current_weather=true');
                 if (res.ok) {
                     const data = await res.json();
                     const temp = data.current_weather.temperature;
                     const code = data.current_weather.weathercode;
                     
-                    // Giải mã chuẩn WMO Weather Interpretation Codes
                     let weatherInfo = { text: "Trời quang", icon: "☀️" };
-
                     if (code === 0) { weatherInfo = { text: "Trời quang", icon: "☀️" }; }
                     else if (code >= 1 && code <= 3) { weatherInfo = { text: "Có mây", icon: "⛅" }; }
                     else if (code === 45 || code === 48) { weatherInfo = { text: "Sương mù", icon: "🌫️" }; }
                     else if (code >= 51 && code <= 57) { weatherInfo = { text: "Mưa phùn", icon: "🌦️" }; }
-                    else if (code >= 61 && code <= 65) { weatherInfo = { text: "Đang mưa", icon: "🌧️" }; } // <--- KHI MƯA SẼ TỰ ĐỘNG CHUYỂN THÀNH ĐÂY
+                    else if (code >= 61 && code <= 65) { weatherInfo = { text: "Đang mưa", icon: "🌧️" }; }
                     else if (code >= 66 && code <= 67) { weatherInfo = { text: "Mưa băng", icon: "🌨️" }; }
                     else if (code >= 71 && code <= 77) { weatherInfo = { text: "Có tuyết", icon: "❄️" }; }
                     else if (code >= 80 && code <= 82) { weatherInfo = { text: "Mưa rào", icon: "🌧️" }; }
@@ -488,7 +505,7 @@
             setInterval(updateOnlineVisitorCount, 4000);
 
             fetchHaTinhWeather();
-            setInterval(fetchHaTinhWeather, 600000); // Cập nhật thời tiết mỗi 10 phút
+            setInterval(fetchHaTinhWeather, 600000);
 
             syncExecutorsFromWeao();
             setTimeout(checkWeaoVersionUpdate, 2000);
