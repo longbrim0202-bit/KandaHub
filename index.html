@@ -65,6 +65,8 @@
         .key-badge.keyless { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
         .key-badge.keysystem { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2); }
 
+        .client-version { font-size: 11px; color: #a1a1aa; }
+        .client-actions { margin-top: 10px; }
         .btn-download { display: block; width: 100%; text-align: center; background: #27272a; color: #fff; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; transition: 0.2s; }
         .btn-download:hover { background: #38bdf8; color: #000; }
 
@@ -148,7 +150,7 @@
         <div id="roblox-version" class="tab-content">
             <h2>ROBLOX VERSION (WEAO SOURCE)</h2>
             <div class="intro-box" style="margin-bottom: 20px;">
-                Cập nhật phiên bản Roblox client mới nhất trích xuất tự động từ weao.xyz. Hệ thống sẽ tự động đối chiếu và thông báo ngay khi có bản cập nhật mới.
+                Cập nhật phiên bản Roblox client mới nhất trích xuất tự động từ weao.xyz kết hợp kho dữ liệu chính thức.
             </div>
             <div class="roblox-version-container">
                 <table class="roblox-version-table">
@@ -169,7 +171,7 @@
         <div id="fonts" class="tab-content">
             <h2>KHO FONT CHỮ ĐỘC ĐÁO & ĐẶC SẮC</h2>
             <div class="intro-box" style="margin-bottom: 15px;">
-                Tất cả font chữ trong kho đều hỗ trợ tải về máy định dạng chuẩn (.ttf) chuẩn quốc tế, bấm là tải về máy thành công ngay lập tức.
+                Tất cả font chữ trong kho đều hỗ trợ tải về máy định dạng chuẩn (.ttf) quốc tế, bấm là tải về thành công ngay lập tức.
             </div>
             <div class="ttf-container">
                 <div class="font-search-box">
@@ -204,6 +206,7 @@
             if(element) element.classList.add('active');
         }
 
+        // Cấu hình Particles.js
         particlesJS("particles-js", {
             "particles": {
                 "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
@@ -222,27 +225,30 @@
             "retina_detect": true
         });
 
+        // Hiệu ứng gõ chữ
         const introMessage = "ĐÂY LÀ KANDA HUB DO MIRUXZ VÀ MORI PHÁT TRIỂN. NƠI ĐÂY CÓ NHỮNG EXECUTOR VÀ SCRIPT TỐT NHẤT CHO BẠN.";
         let charIndex = 0;
         function typeWriter() {
-            if (charIndex < introMessage.length) {
-                document.getElementById("typing-text").innerHTML += introMessage.charAt(charIndex);
+            const txtElement = document.getElementById("typing-text");
+            if (txtElement && charIndex < introMessage.length) {
+                txtElement.innerHTML += introMessage.charAt(charIndex);
                 charIndex++;
                 setTimeout(typeWriter, 30);
             }
         }
 
-        const clientsData = [
-            { name: "MADIUM EXECUTOR", version: "V1.0", platform: "PC", link: "https://gofile.io/d/w92hs4", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQVNFqMIpb7zMZyOjnb44R_ZqDxBRj1GL_SlRgpNXYD8dopFt", status: "working", keyType: "keyless" },
-            { name: "CODE X", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/vk46d8d9qwiz4ik/Codex+v2.729.840.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggd5nh-yMUVkaPmt1NnFhMCb56_jzKTdyZ6i7oGxnWw&s=10", status: "detected", keyType: "keysystem" },
-            { name: "REAL EXECUTOR", version: "V1.0", platform: "PC", link: "https://pulse.alphagridnexus7.lol/Real_Executor_Latest.zip?c=AJ_nZmoEhwUAXFgCAFZOFwASAAAAAABC&s=362244", icon: "https://realexecutor.com/assets/images/favicon.png", status: "working", keyType: "keysystem" },
-            { name: "VELOCITY", version: "V1.0", platform: "PC", link: "https://gofile.io/d/6HAQxH", icon: "https://getvelocity.org/wp-content/uploads/2025/02/velocity-executor-logo.png", status: "working", keyType: "keysystem" },
-            { name: "SOLARA", version: "V1.5.2", platform: "PC", link: "https://bstlar.com/3u9/getsolara2", icon: "https://solaraexecutor.com/wp-content/webp-express/webp-images/uploads/2024/05/logo.png.webp", status: "working", keyType: "keyless" },
-            { name: "XENO", version: "V1.0", platform: "PC", link: "#", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHKl7W958N7B4HYs97Yx9ZIUrZAAiLAV7-OXf4BgkETA&s=10", status: "working", keyType: "keyless" },
-            { name: "NEXOMIA", version: "V1.0", platform: "PC", link: "https://gofile.io/d/J8DWo4", icon: "https://via.placeholder.com/40", status: "working", keyType: "keyless" },
-            { name: "DELTA X QUỐC TẾ", version: "V2.729", platform: "MOBILE", link: "https://delta-executor.com/deltaexploit/", icon: "https://delta-executor.com/favicon.ico", status: "working", keyType: "keysystem" },
-            { name: "DELTA X VNG", version: "V2.729", platform: "MOBILE", link: "https://deltaexecutor.filesadda.com/Delta%20VNG%20V727.apk", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem" },
-            { name: "DELTA X FIX LAG", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/qjjpk78gzmd0l3y/DELTA_X_2729_FIX_LAG.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem" }
+        // Danh sách Executor gốc kèm weaoKey để đồng bộ trạng thái từ API weao.xyz
+        let clientsData = [
+            { name: "MADIUM EXECUTOR", weaoKey: "madium", version: "V1.0", platform: "PC", link: "https://gofile.io/d/w92hs4", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQVNFqMIpb7zMZyOjnb44R_ZqDxBRj1GL_SlRgpNXYD8dopFt", status: "working", keyType: "keyless" },
+            { name: "CODE X", weaoKey: "codex", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/vk46d8d9qwiz4ik/Codex+v2.729.840.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggd5nh-yMUVkaPmt1NnFhMCb56_jzKTdyZ6i7oGxnWw&s=10", status: "detected", keyType: "keysystem" },
+            { name: "REAL EXECUTOR", weaoKey: "real", version: "V1.0", platform: "PC", link: "https://pulse.alphagridnexus7.lol/Real_Executor_Latest.zip?c=AJ_nZmoEhwUAXFgCAFZOFwASAAAAAABC&s=362244", icon: "https://realexecutor.com/assets/images/favicon.png", status: "working", keyType: "keysystem" },
+            { name: "VELOCITY", weaoKey: "velocity", version: "V1.0", platform: "PC", link: "https://gofile.io/d/6HAQxH", icon: "https://getvelocity.org/wp-content/uploads/2025/02/velocity-executor-logo.png", status: "working", keyType: "keysystem" },
+            { name: "SOLARA", weaoKey: "solara", version: "V1.5.2", platform: "PC", link: "https://bstlar.com/3u9/getsolara2", icon: "https://solaraexecutor.com/wp-content/webp-express/webp-images/uploads/2024/05/logo.png.webp", status: "working", keyType: "keyless" },
+            { name: "XENO", weaoKey: "xeno", version: "V1.0", platform: "PC", link: "#", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHKl7W958N7B4HYs97Yx9ZIUrZAAiLAV7-OXf4BgkETA&s=10", status: "working", keyType: "keyless" },
+            { name: "NEXOMIA", weaoKey: "nexomia", version: "V1.0", platform: "PC", link: "https://gofile.io/d/J8DWo4", icon: "https://via.placeholder.com/40", status: "working", keyType: "keyless" },
+            { name: "DELTA X QUỐC TẾ", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://delta-executor.com/deltaexploit/", icon: "https://delta-executor.com/favicon.ico", status: "working", keyType: "keysystem" },
+            { name: "DELTA X VNG", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://deltaexecutor.filesadda.com/Delta%20VNG%20V727.apk", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem" },
+            { name: "DELTA X FIX LAG", weaoKey: "delta", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/qjjpk78gzmd0l3y/DELTA_X_2729_FIX_LAG.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem" }
         ];
 
         function renderExecutors() {
@@ -287,6 +293,29 @@
             });
         }
 
+        // Tự động đồng bộ trạng thái Executor từ API weao.xyz
+        async function syncExecutorsFromWeao() {
+            try {
+                const res = await fetch('https://weao.xyz/api/status/exploits', { cache: 'no-store' }).catch(() => null);
+                if (res && res.ok) {
+                    const data = await res.json();
+                    const list = data.exploits || data;
+                    if (Array.isArray(list)) {
+                        clientsData.forEach(client => {
+                            if (!client.weaoKey) return;
+                            const match = list.find(item => item.name && item.name.toLowerCase().includes(client.weaoKey));
+                            if (match) {
+                                const isWorking = match.status === 'updated' || match.updated === true || match.working === true || (match.status && match.status.toLowerCase().includes('up'));
+                                client.status = isWorking ? 'working' : 'detected';
+                            }
+                        });
+                        renderExecutors();
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // Kho Font chữ TTF
         const ttfFontsData = [
             { name: "Minecraft Regular", category: "Pixel / Game", fileSize: "34 KB", previewText: "The quick brown fox jumps over", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
             { name: "Press Start 2P", category: "Pixel / Game", fileSize: "45 KB", previewText: "RETRO ARCADE 8-BIT", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
@@ -348,6 +377,7 @@
             });
         }
 
+        // Quản lý phiên bản Roblox
         let robloxVersionsData = [
             { version: "version-ed2b47b81f0484a", arch: "Windows x64", date: "Mới nhất", link: "https://setup.rbxcdn.com/version-ed2b47b81f0484a-RobloxPlayerInstaller.exe" }
         ];
@@ -381,6 +411,7 @@
             }, 1500);
         }
 
+        // Kiểm tra bản cập nhật Roblox tự động từ weao.xyz API
         async function checkWeaoVersionUpdate() {
             try {
                 const res = await fetch('https://weao.xyz/api/version/window', { cache: 'no-store' }).catch(() => null);
@@ -398,12 +429,17 @@
         }
 
         function showUpdateBanner(newVer) {
-            document.getElementById('update-banner-text').innerText = `Weao vừa phát hiện phiên bản Roblox mới (${newVer})!`;
-            document.getElementById('update-banner').style.display = 'block';
+            const bannerText = document.getElementById('update-banner-text');
+            const banner = document.getElementById('update-banner');
+            if (bannerText && banner) {
+                bannerText.innerText = `Weao vừa phát hiện phiên bản Roblox mới (${newVer})!`;
+                banner.style.display = 'block';
+            }
         }
 
         function closeUpdateBanner() {
-            document.getElementById('update-banner').style.display = 'none';
+            const banner = document.getElementById('update-banner');
+            if (banner) banner.style.display = 'none';
         }
 
         function goToRobloxTab() {
@@ -416,6 +452,7 @@
             if(e.key === 'Enter') fetchScriptBloxMulti();
         }
 
+        // Tìm kiếm Script thông qua ScriptBlox API
         async function fetchScriptBloxMulti() {
             const query = document.getElementById('game-search-input').value.trim();
             const results = document.getElementById('script-results');
@@ -473,12 +510,19 @@
             }, 1500);
         }
 
+        // Khởi chạy toàn bộ hệ thống khi tải trang xong
         window.onload = function() {
             typeWriter();
             renderExecutors();
             renderFonts(ttfFontsData);
             renderRobloxVersions();
+            
+            // Đồng bộ dữ liệu ngầm từ weao.xyz
+            syncExecutorsFromWeao();
             setTimeout(checkWeaoVersionUpdate, 2000);
+
+            // Đặt lịch tự động làm mới ngầm mỗi 5 phút
+            setInterval(syncExecutorsFromWeao, 300000);
             setInterval(checkWeaoVersionUpdate, 300000);
         };
     </script>
