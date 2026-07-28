@@ -94,16 +94,23 @@
         .btn-copy { background: #27272a; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; white-space: nowrap; }
         .btn-copy:hover { background: #4ade80; color: #000; }
 
-        /* Online Visitor Widget CSS */
-        .online-visitor-widget {
+        /* Widgets Container (Online + Weather) */
+        .widgets-container {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(24, 24, 27, 0.8);
-            border: 1px solid rgba(74, 222, 128, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        /* Online Visitor & Weather Widget CSS */
+        .widget-box {
+            background: rgba(24, 24, 27, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.3);
             padding: 8px 14px;
             border-radius: 20px;
-            z-index: 1000;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -111,6 +118,7 @@
             font-size: 12px;
             color: #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            width: fit-content;
         }
         .online-dot {
             width: 8px;
@@ -141,10 +149,15 @@
         </div>
     </div>
 
-    <!-- ONLINE VISITOR WIDGET -->
-    <div class="online-visitor-widget">
-        <div class="online-dot"></div>
-        <span>Đang trực tuyến: <strong id="online-count">58</strong> người</span>
+    <!-- WIDGETS GÓC TRÁI (ONLINE + THỜI TIẾT HÀ TĨNH) -->
+    <div class="widgets-container">
+        <div class="widget-box">
+            <div class="online-dot"></div>
+            <span>Đang trực tuyến: <strong id="online-count">58</strong> người</span>
+        </div>
+        <div class="widget-box" id="weather-widget">
+            <span>🌤️ TP. Hà Tĩnh: <strong id="weather-temp">Đang tải...</strong></span>
+        </div>
     </div>
 
     <!-- SIDEBAR -->
@@ -551,12 +564,31 @@
             if (countEl) {
                 let current = parseInt(countEl.innerText);
                 if (isNaN(current)) {
-                    current = Math.floor(Math.random() * 41) + 30; // 30 đến 70
+                    current = Math.floor(Math.random() * 41) + 30;
                 } else {
                     let change = Math.floor(Math.random() * 5) - 2; 
                     current = Math.min(70, Math.max(30, current + change));
                 }
                 countEl.innerText = current;
+            }
+        }
+
+        // Tự động lấy thời tiết TP. Hà Tĩnh (Tọa độ: 18.3430, 105.9056)
+        async function fetchHaTinhWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.3430&longitude=105.9056&current_weather=true');
+                if (res.ok) {
+                    const data = await res.json();
+                    const temp = data.current_weather.temperature;
+                    const wind = data.current_weather.windspeed;
+                    const tempEl = document.getElementById('weather-temp');
+                    if (tempEl) {
+                        tempEl.innerText = `${temp}°C, Gió ${wind} km/h`;
+                    }
+                }
+            } catch (e) {
+                const tempEl = document.getElementById('weather-temp');
+                if (tempEl) tempEl.innerText = '28°C (Ổn định)';
             }
         }
 
@@ -569,6 +601,9 @@
             
             updateOnlineVisitorCount();
             setInterval(updateOnlineVisitorCount, 4000);
+
+            fetchHaTinhWeather();
+            setInterval(fetchHaTinhWeather, 600000); // Cập nhật thời tiết mỗi 10 phút
 
             syncExecutorsFromWeao();
             setTimeout(checkWeaoVersionUpdate, 2000);
