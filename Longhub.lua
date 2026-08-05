@@ -1,4 +1,4 @@
--- KandaHub - Optimized Graphics & Combat Edition by Miruxz
+-- KandaHub - Optimized Graphics & Combat Edition with Custom Background by Miruxz
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
@@ -7,6 +7,14 @@ local Window = Rayfield:CreateWindow({
    LoadingSubtitle = "Developer by Miruxz",
    ConfigurationSaving = { Enabled = false },
    KeySystem = false,
+   
+   -- HÌNH NỀN TÙY CHỈNH CỦA BẠN
+   Background = {
+      Enabled = true,
+      Transparency = 0.3,
+      Image = "rbxassetid://111224619797256",
+      Color = Color3.fromRGB(0, 30, 80),
+   }
 })
 
 local CombatTab = Window:CreateTab("Combat Pro", 4483362458)
@@ -44,6 +52,14 @@ local TargetLockToggle = CombatTab:CreateToggle({
    Flag = "TargetLockToggle",
    Callback = function(Value)
       getgenv().TargetLockEnabled = Value
+      if not Value then
+          pcall(function()
+              local char = LocalPlayer.Character
+              if char and char:FindFirstChild("HumanoidRootPart") then
+                  char.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+              end
+          end)
+      end
    end,
 })
 
