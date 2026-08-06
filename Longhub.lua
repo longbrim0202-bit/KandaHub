@@ -12,7 +12,7 @@ local Window = Rayfield:CreateWindow({
    Background = {
       Enabled = true,
       Transparency = 0.3,
-      Image = "rbxassetid://111224619797256",
+      Image = "rbxassetid://8574607473",
       Color = Color3.fromRGB(0, 30, 80),
    }
 })
