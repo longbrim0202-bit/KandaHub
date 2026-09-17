@@ -1,526 +1,384 @@
 <!DOCTYPE html>
-<html lang="vi" id="page-body">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanda Hub - Roblox Executors & Scripts</title>
-    <!-- Particles.js CDN -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0c0c0e; color: #fff; display: flex; height: 100vh; overflow: hidden; }
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; left: 0; }
-        
-        /* Update Banner */
-        #update-banner { display: none; position: fixed; top: 20px; right: 20px; background: #18181b; border: 1px solid #38bdf8; padding: 15px; border-radius: 8px; z-index: 1000; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2); max-width: 320px; }
-        #update-banner h4 { color: #38bdf8; margin-bottom: 5px; font-size: 14px; }
-        #update-banner p { font-size: 12px; color: #a1a1aa; margin-bottom: 10px; }
-        .banner-actions button { padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 4px; cursor: pointer; border: none; }
-        .btn-update-now { background: #38bdf8; color: #000; margin-right: 5px; }
-        .btn-close-banner { background: #27272a; color: #fff; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAMESPACE - Portfolio</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
 
-        /* Sidebar */
-        .sidebar { width: 260px; background: #121215; border-right: 1px solid #27272a; display: flex; flex-direction: column; padding: 20px; z-index: 10; }
-        .sidebar-profile { text-align: center; margin-bottom: 25px; }
-        .sidebar-profile img { width: 64px; height: 64px; border-radius: 50%; border: 2px solid #38bdf8; margin-bottom: 10px; object-fit: cover; }
-        .profile-subtitle { font-size: 11px; color: #71717a; text-transform: uppercase; }
-        .profile-name-wrapper { font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; gap: 5px; }
-        .verified-badge { color: #38bdf8; font-size: 12px; }
-        
-        .sidebar-title { font-size: 10px; color: #71717a; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
-        .menu-item { padding: 10px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: #a1a1aa; margin-bottom: 5px; transition: 0.2s; }
-        .menu-item:hover, .menu-item.active { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
-        
-        .sidebar-footer { margin-top: auto; font-size: 11px; color: #71717a; text-align: center; border-top: 1px solid #27272a; padding-top: 15px; }
-        .sidebar-footer span { color: #38bdf8; font-weight: bold; }
+    body {
+      background-color: #030712;
+      background-image: linear-gradient(rgba(3, 7, 18, 0.65), rgba(3, 7, 18, 0.65)), url('https://images6.alphacoders.com/139/1396087.webp');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
 
-        /* Main Content */
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; z-index: 10; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        h2 { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #fff; }
-        
-        .intro-box { background: rgba(24, 24, 27, 0.6); border: 1px solid #27272a; padding: 15px; border-radius: 8px; font-size: 13px; color: #d4d4d8; margin-bottom: 20px; }
-        .typing-cursor { display: inline-block; width: 2px; height: 14px; background: #38bdf8; margin-left: 2px; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+    /* ===== HERO SECTION ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;
+      padding: 40px 20px;
+      flex-wrap: wrap;
+    }
 
-        /* Client Grid / Executors - Đã tối ưu hóa chia lưới chuẩn, không tràn chữ sUNC/UNC */
-        .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .client-card { background: rgba(24, 24, 27, 0.7); border: 1px solid #27272a; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; gap: 10px; overflow: hidden; }
-        .client-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .client-info { display: flex; align-items: center; gap: 12px; }
-        .client-info img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
-        .client-name { font-weight: bold; font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .client-meta { font-size: 11px; color: #a1a1aa; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; align-items: center; }
-        
-        /* Badges */
-        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
-        .status-badge.working { background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2); }
-        .status-badge.detected { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-        
-        .key-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; }
-        .key-badge.keyless { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .key-badge.keysystem { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2); }
+    .hero-text {
+      max-width: 500px;
+      animation: fadeInUp 1s ease-out forwards;
+    }
 
-        /* Khung chỉ số sUNC và UNC bọc gọn trong card */
-        .unc-stats { background: rgba(15, 23, 42, 0.5); border: 1px solid #27272a; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center; }
-        .unc-stats span b { color: #fff; }
+    .hero-text h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    }
 
-        .client-version { font-size: 11px; color: #a1a1aa; }
-        .client-actions { margin-top: 2px; }
-        .btn-download { display: block; width: 100%; text-align: center; background: #27272a; color: #fff; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; transition: 0.2s; }
-        .btn-download:hover { background: #38bdf8; color: #000; }
+    .hero-text h1 span {
+      color: #38bdf8;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        /* Tables (Roblox Version) */
-        .roblox-version-container { background: rgba(24, 24, 27, 0.7); border: 1px solid #27272a; border-radius: 8px; overflow: hidden; }
-        .roblox-version-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        .roblox-version-table th, .roblox-version-table td { padding: 12px 15px; border-bottom: 1px solid #27272a; }
-        .roblox-version-table th { background: #18181b; color: #a1a1aa; font-size: 11px; }
-        .version-tag { color: #38bdf8; font-family: monospace; }
-        .arch-badge { background: #27272a; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+    .hero-text p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    }
 
-        /* Font & Script tabs */
-        .font-search-box { margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .font-search-flex input, .search-box input { width: 100%; padding: 10px 15px; background: #09090b; border: 1px solid #27272a; border-radius: 6px; color: #fff; font-size: 14px; }
-        .search-box { display: flex; gap: 10px; margin-bottom: 15px; }
-        .search-box button { padding: 0 20px; background: #38bdf8; color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        
-        .script-card { background: rgba(24, 24, 27, 0.7); border: 1px solid #27272a; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
-        .script-title { font-weight: bold; color: #38bdf8; margin-bottom: 5px; font-size: 15px; }
-        .script-game { font-size: 12px; color: #a1a1aa; margin-bottom: 10px; }
-        .script-code-box { background: #09090b; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 12px; color: #4ade80; overflow-x: auto; gap: 10px; }
-        .btn-copy { background: #27272a; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; white-space: nowrap; }
+    .hero-text p span {
+      color: #38bdf8;
+      font-weight: 600;
+    }
 
-        /* Widgets Container (Bottom-Left) */
-        .widgets-container { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-        .widget-box { background: rgba(24, 24, 27, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); padding: 8px 14px; border-radius: 20px; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(8px); font-size: 12px; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); width: fit-content; }
-        .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; animation: pulse-dot 1.5s infinite; }
-        @keyframes pulse-dot { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+    /* ===== PROFILE CARD ===== */
+    .profile-card {
+      width: 320px;
+      background: rgba(10, 16, 30, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      animation: float 4s ease-in-out infinite, fadeInUp 1.2s ease-out forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        /* API Status Bar Container (Top-Right) */
-        .api-status-container { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 6px; z-index: 1000; }
-        .api-status-box { background: rgba(24, 24, 27, 0.85); border: 1px solid rgba(74, 222, 128, 0.3); padding: 6px 12px; border-radius: 16px; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(8px); font-size: 11px; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); width: fit-content; }
-        .api-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; }
-    </style>
+    .profile-card:hover {
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Banner Card */
+    .card-banner {
+      height: 95px;
+      background: url('https://i.pinimg.com/736x/88/19/23/8819234850ef313f87d4681617e4a7ec.jpg') center/cover no-repeat;
+      position: relative;
+    }
+
+    /* Avatar & Status */
+    .avatar-wrapper {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      margin-top: -37px;
+      margin-left: 20px;
+    }
+
+    .card-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid #0d1322;
+      object-fit: cover;
+    }
+
+    .status-dot {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      background-color: #3b82f6;
+      border: 3px solid #0d1322;
+      border-radius: 50%;
+    }
+
+    /* Card Content */
+    .card-body {
+      padding: 12px 20px 20px 20px;
+    }
+
+    .user-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .user-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      margin-bottom: 16px;
+    }
+
+    .user-handle {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .badge-meow {
+      background: rgba(139, 92, 246, 0.25);
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      color: #c084fc;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Connections Box */
+    .connections-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .connections-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .connection-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .connection-item:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      transform: translateX(4px);
+    }
+
+    .connection-item i {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* ===== PROJECTS SECTION ===== */
+    .projects {
+      min-height: 100vh;
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .projects h2 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 40px;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: left;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card:hover {
+      border-color: rgba(56, 189, 248, 0.9);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.25);
+    }
+
+    .card-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #38bdf8;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #38bdf8;
+      font-weight: 500;
+    }
+
+    .note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
-
-    <!-- UPDATE NOTIFICATION POPUP -->
-    <div id="update-banner">
-        <h4>🚀 PHÁT HIỆN BẢN RBX MỚI!</h4>
-        <p id="update-banner-text">Hệ thống weao.xyz vừa phát hiện phiên bản Roblox mới nhất. Hãy cập nhật ngay!</p>
-        <div class="banner-actions">
-            <button class="btn-update-now" onclick="goToRobloxTab()">XEM NGAY</button>
-            <button class="btn-close-banner" onclick="closeUpdateBanner()">ĐÓNG</button>
-        </div>
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Hai, my name<br>is <span>NAMESPACE</span></h1>
+      <p>I've created <span>2d designs</span></p>
     </div>
 
-    <!-- API STATUS BAR (TOP RIGHT) -->
-    <div class="api-status-container">
-        <div class="api-status-box">
-            <div class="api-dot"></div>
-            <span>API ScriptBlox: <strong style="color: #4ade80;">Working</strong></span>
+    <div class="profile-card">
+      <div class="card-banner"></div>
+      
+      <div class="avatar-wrapper">
+        <img class="card-avatar" src="https://i.pinimg.com/564x/a9/37/83/a93783709b43c6f497ebef8a901e1948.jpg" alt="Avatar">
+        <div class="status-dot"></div>
+      </div>
+
+      <div class="card-body">
+        <div class="user-name">NAMESPACE</div>
+        <div class="user-tag-row">
+          <span class="user-handle">@namespace</span>
+          <span class="badge-meow"><i class="fa-solid fa-heart"></i> MEOW</span>
         </div>
-        <div class="api-status-box">
-            <div class="api-dot"></div>
-            <span>API Weao: <strong style="color: #4ade80;">Working</strong></span>
+
+        <div class="connections-box">
+          <div class="connections-title">CONNECTIONS</div>
+          <a href="#" class="connection-item"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+          <a href="#" class="connection-item"><i class="fa-brands fa-github"></i> GitHub</a>
+          <a href="#" class="connection-item"><i class="fa-solid fa-bag-shopping"></i> Itemku</a>
+          <a href="#" class="connection-item"><i class="fa-brands fa-youtube"></i> YouTube</a>
         </div>
-        <div class="api-status-box">
-            <div class="api-dot"></div>
-            <span>Bot Server: <strong style="color: #4ade80;">Working</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects">
+    <h2>Projects</h2>
+    
+    <div class="grid">
+      <div class="card">
+        <div>
+          <div class="card-num">01</div>
+          <h3>Goose</h3>
+          <p>A Discord AI Chatbot that answers like your friend (if they're even exist). Goose likes to ragebaits people when he wants to...</p>
         </div>
+        <span class="card-tag">Discord bot</span>
+      </div>
+
+      <div class="card">
+        <div>
+          <div class="card-num">02</div>
+          <h3>Foxname</h3>
+          <p>A Script Hub for roblox scripting related, sharing some quality script with a good community; I'm working as Co-Owner there</p>
+        </div>
+        <span class="card-tag">Luau executor script</span>
+      </div>
+
+      <div class="card">
+        <div>
+          <div class="card-num">03</div>
+          <h3>Shortlinker</h3>
+          <p>A temporary shortlink creator that's completely free, with custom link, discord embed, Twitter/X embed, link duration, and more!</p>
+        </div>
+        <span class="card-tag">Website</span>
+      </div>
+
+      <div class="card">
+        <div>
+          <div class="card-num">04</div>
+          <h3>Custom RPC</h3>
+          <p>A Discord's custom rich presence that can be run through terminal or your server to be run 24/7. It's fully open source!</p>
+        </div>
+        <span class="card-tag">Misc</span>
+      </div>
     </div>
 
-    <!-- WIDGETS (BOTTOM LEFT) -->
-    <div class="widgets-container">
-        <div class="widget-box">
-            <div class="online-dot"></div>
-            <span>Đang trực tuyến: <strong id="online-count">58</strong> người</span>
-        </div>
-        <div class="widget-box" id="weather-widget">
-            <span id="weather-text">🌤️ TP. Hà Tĩnh: Đang tải...</span>
-        </div>
-    </div>
+    <p class="note">These projects are the ones I can show publicly. There's lots of private stuff too that I can't give information about it publicly.</p>
+  </section>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-profile">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvwlgR3QpHcvV8qJ3lDdSDik7WanlEB5HpyVKGiglp2Q&s" alt="Kanda Hub Avatar">
-            <div class="profile-subtitle">Hi, I am</div>
-            <div class="profile-name-wrapper">
-                <span>Kanda Hub</span>
-                <span class="verified-badge">✔</span>
-            </div>
-        </div>
-
-        <div class="sidebar-title">CHÍNH</div>
-        <div class="menu-item active" onclick="switchTab('executors', this)">📁 EXECUTORS</div>
-        <div class="menu-item" onclick="switchTab('roblox-version', this)">🚀 ROBLOX VERSION</div>
-        <div class="menu-item" onclick="switchTab('fonts', this)">🔤 KHO FONT</div>
-        
-        <div class="sidebar-title" style="margin-top: 15px;">KHO SCRIPT</div>
-        <div class="menu-item" onclick="switchTab('scripts', this)">🔍 TÌM KIẾM SCRIPT</div>
-
-        <div class="sidebar-footer">DEVELOPER: <span>MIRUXZ & MORI</span></div>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <!-- EXECUTORS TAB -->
-        <div id="executors" class="tab-content active">
-            <h2>DANH SÁCH EXECUTORS</h2>
-            <div class="intro-box" id="typing-intro">
-                <span id="typing-text"></span><span class="typing-cursor"></span>
-            </div>
-            <div class="client-grid" id="client-grid"></div>
-        </div>
-
-        <!-- ROBLOX VERSION TAB -->
-        <div id="roblox-version" class="tab-content">
-            <h2>ROBLOX VERSION (WEAO SOURCE)</h2>
-            <div class="intro-box" style="margin-bottom: 20px;">Cập nhật phiên bản Roblox client mới nhất trích xuất tự động từ weao.xyz.</div>
-            <div class="roblox-version-container">
-                <table class="roblox-version-table">
-                    <thead>
-                        <tr>
-                            <th>PHIÊN BẢN</th>
-                            <th>KIẾN TRÚC</th>
-                            <th>NGÀY CẬP NHẬT</th>
-                            <th>THAO TÁC</th>
-                        </tr>
-                    </thead>
-                    <tbody id="roblox-version-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- FONTS TAB -->
-        <div id="fonts" class="tab-content">
-            <h2>KHO FONT CHỮ ĐỘC ĐÁO & ĐẶC SẮC</h2>
-            <div class="ttf-container">
-                <div class="font-search-box">
-                    <input type="text" id="live-search-input" placeholder="NHẬP TÊN FONT..." oninput="filterFonts()">
-                    <input type="text" id="global-preview-input" placeholder="NHẬP VĂN BẢN MẪU..." value="Kanda Hub Roblox UI" oninput="updateLivePreviews()">
-                </div>
-                <div class="ttf-grid" id="ttf-grid" style="display: flex; flex-direction: column; gap: 10px;"></div>
-            </div>
-        </div>
-
-        <!-- SCRIPTS TAB -->
-        <div id="scripts" class="tab-content">
-            <h2>TÌM KIẾM SCRIPT (SCRIPTBLOX)</h2>
-            <div class="script-container">
-                <div class="search-box">
-                    <input type="text" id="game-search-input" placeholder="NHẬP TÊN GAME..." onkeypress="handleKeyPress(event)">
-                    <button onclick="fetchScriptBloxMulti()">TÌM KIẾM</button>
-                </div>
-                <div id="script-results"><p style="color: #71717a;">NHẬP TÊN GAME VÀ BẤM TÌM KIẾM.</p></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            if(element) element.classList.add('active');
-        }
-
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#38bdf8" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.4, "random": false },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#38bdf8", "opacity": 0.2, "width": 1 },
-                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }
-            },
-            "retina_detect": true
-        });
-
-        const introMessage = "ĐÂY LÀ KANDA HUB DO MIRUXZ VÀ MORI PHÁT TRIỂN. NƠI ĐÂY CÓ NHỮNG EXECUTOR VÀ SCRIPT TỐT NHẤT CHO BẠN.";
-        let charIndex = 0;
-        function typeWriter() {
-            const txtElement = document.getElementById("typing-text");
-            if (txtElement && charIndex < introMessage.length) {
-                txtElement.innerHTML += introMessage.charAt(charIndex);
-                charIndex++;
-                setTimeout(typeWriter, 30);
-            }
-        }
-
-        let clientsData = [
-            { name: "MADIUM EXECUTOR", weaoKey: "madium", version: "V1.0", platform: "PC", link: "https://olemad.fromsmash.com/MadiumNEW", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQVNFqMIpb7zMZyOjnb44R_ZqDxBRj1GL_SlRgpNXYD8dopFt", status: "working", keyType: "keyless", sunc: "100%", unc: "98%" },
-            { name: "CODE X", weaoKey: "codex", version: "V2.729", platform: "MOBILE", link: "https://www.mediafire.com/file/vk46d8d9qwiz4ik/Codex+v2.729.840.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggd5nh-yMUVkaPmt1NnFhMCb56_jzKTdyZ6i7oGxnWw&s=10", status: "detected", keyType: "keysystem", sunc: "96%", unc: "98%" },
-            { name: "REAL EXECUTOR", weaoKey: "real", version: "V1.0", platform: "PC", link: "https://projectreal.gg/download/", icon: "https://realexecutor.com/assets/images/favicon.png", status: "Working", keyType: "keysystem", sunc: "100%", unc: "99%" },
-            { name: "VELOCITY", weaoKey: "velocity", version: "V1.0", platform: "PC", link: "https://gofile.io/d/6HAQxH", icon: "https://getvelocity.org/wp-content/uploads/2025/02/velocity-executor-logo.png", status: "working", keyType: "keysystem", sunc: "93%", unc: "98%" },
-            { name: "SOLARA", weaoKey: "solara", version: "V1.5.2", platform: "PC", link: "https://solaraexecutor.com/download-solara/", icon: "https://solaraexecutor.com/wp-content/webp-express/webp-images/uploads/2024/05/logo.png.webp", status: "working", keyType: "keyless", sunc: "46%", unc: "67%" },
-            { name: "XENO", weaoKey: "xeno", version: "V1.0", platform: "PC", link: "https://roblox-exploits.com/xeno-executor.html#download", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHKl7W958N7B4HYs97Yx9ZIUrZAAiLAV7-OXf4BgkETA&s=10", status: "working", keyType: "keyless", sunc: "40%", unc: "84%" },
-            { name: "NEXOMIA", weaoKey: "nexomia", version: "V1.0", platform: "PC", link: "https://gofile.io/d/J8DWo4", icon: "https://via.placeholder.com/40", status: "detected", keyType: "keyless", sunc: "90%", unc: "95%" },
-            { name: "DELTA X QUỐC TẾ", weaoKey: "delta", version: "V2.731", platform: "MOBILE", link: "https://delta.filenetwork.vip/android.html", icon: "https://delta-executor.com/favicon.ico", status: "working", keyType: "keysystem", sunc: "100%", unc: "99%" },
-            { name: "DELTA X VNG", weaoKey: "delta", version: "V2.731", platform: "MOBILE", link: "https://gloopup.net/Delta/android_vn/", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem", sunc: "100%", unc: "99%" },
-            { name: "DELTA X FIX LAG", weaoKey: "delta", version: "V2.731", platform: "MOBILE", link: "https://www.mediafire.com/file/qjjpk78gzmd0l3y/DELTA_X_2729_FIX_LAG.apk/file", icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoL2_hnOr8kkjFpJoniG-xRKsZRpoFP9anpCzmr0lnag&s", status: "working", keyType: "keysystem", sunc: "100%", unc: "99%" }
-        ];
-
-        function renderExecutors() {
-            const gridContainer = document.getElementById('client-grid');
-            if(!gridContainer) return;
-            gridContainer.innerHTML = '';
-            clientsData.forEach(client => {
-                let statusClass = client.status === 'detected' ? 'detected' : 'working';
-                let statusText = client.status === 'detected' ? 'DETECTED' : 'WORKING';
-                const keyClass = client.keyType === 'keyless' ? 'keyless' : 'keysystem';
-                const keyText = client.keyType === 'keyless' ? 'KEYLESS' : 'KEY-SYSTEM';
-                
-                gridContainer.innerHTML += `
-                    <div class="client-card">
-                        <div class="client-info">
-                            <img src="${client.icon}" alt="${client.name}" onerror="this.src='https://via.placeholder.com/40'">
-                            <div style="overflow: hidden; flex: 1;">
-                                <div class="client-name">${client.name}</div>
-                                <div class="client-meta">
-                                    <span class="client-version">${client.version} - ${client.platform}</span>
-                                    <span class="status-badge ${statusClass}"><span class="status-dot"></span> ${statusText}</span>
-                                    <span class="key-badge ${keyClass}">${keyText}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="unc-stats">
-                            <span>sUNC: <b>${client.sunc}</b></span>
-                            <span>UNC: <b>${client.unc}</b></span>
-                        </div>
-                        <div class="client-actions"><a href="${client.link}" target="_blank" class="btn-download">TẢI VỀ</a></div>
-                    </div>
-                `;
-            });
-        }
-
-        async function syncExecutorsFromWeao() {
-            try {
-                const res = await fetch('https://weao.xyz/api/status/exploits', { cache: 'no-store' }).catch(() => null);
-                if (res && res.ok) {
-                    const data = await res.json();
-                    const list = data.exploits || data;
-                    if (Array.isArray(list)) {
-                        clientsData.forEach(client => {
-                            if (!client.weaoKey) return;
-                            const match = list.find(item => item.name && item.name.toLowerCase().includes(client.weaoKey));
-                            if (match) {
-                                const isWorking = match.status === 'updated' || match.updated === true || match.working === true || (match.status && match.status.toLowerCase().includes('up'));
-                                client.status = isWorking ? 'working' : 'detected';
-                            }
-                        });
-                        renderExecutors();
-                    }
-                }
-            } catch (e) {}
-        }
-
-        const ttfFontsData = [
-            { name: "Minecraft Regular", category: "Pixel / Game", fileSize: "34 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
-            { name: "Press Start 2P", category: "Pixel / Game", fileSize: "45 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pressstart2p/PressStart2P-Regular.ttf" },
-            { name: "Jujutsu Kaisen", category: "Anime / Display", fileSize: "75 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/montserrat/Montserrat-Bold.ttf" },
-            { name: "Carton Six", category: "Comic / Display", fileSize: "45 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/fredoka/Fredoka-Bold.ttf" },
-            { name: "Octin Stencil RG Bold", category: "Industrial / Stencil", fileSize: "52 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/teko/Teko-Bold.ttf" },
-            { name: "New Era Casual", category: "Casual / Hand-drawn", fileSize: "38 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/outfit/Outfit-Regular.ttf" },
-            { name: "Gothic Ultra", category: "Gothic / Medieval", fileSize: "55 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/cinzel/Cinzel-Bold.ttf" },
-            { name: "Roboto Bold", category: "Modern / Sans-Serif", fileSize: "42 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/roboto/Roboto-Bold.ttf" },
-            { name: "Poppins Medium", category: "Geometric / Clean", fileSize: "48 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Medium.ttf" },
-            { name: "JetBrains Mono", category: "Coding / Developer", fileSize: "60 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono-Bold.ttf" },
-            { name: "Bebas Neue", category: "Display / Banner", fileSize: "30 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/bebasneue/BebasNeue-Regular.ttf" },
-            { name: "Lobster Script", category: "Handwritten / Script", fileSize: "82 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/lobster/Lobster-Regular.ttf" },
-            { name: "Pacifico Regular", category: "Script / Casual", fileSize: "70 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/pacifico/Pacifico-Regular.ttf" },
-            { name: "Comfortaa Bold", category: "Rounded / Modern", fileSize: "40 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/comfortaa/Comfortaa-Bold.ttf" },
-            { name: "Anton Regular", category: "Heavy / Poster", fileSize: "35 KB", previewText: "Kanda Hub Roblox UI", ttfUrl: "https://github.com/google/fonts/raw/main/ofl/anton/Anton-Regular.ttf" }
-        ];
-
-        function renderFonts(fonts) {
-            const grid = document.getElementById('ttf-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-            fonts.forEach(font => {
-                grid.innerHTML += `
-                    <div class="ttf-card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <div style="font-weight: bold; font-size: 16px; color: #fff;">${font.name}</div>
-                            <div style="font-size: 12px; color: #aaa; margin-top: 3px;">${font.category} • ${font.fileSize}</div>
-                            <div class="ttf-sample-text" style="font-size: 14px; color: #ddd; margin-top: 6px; font-style: italic;">${font.previewText}</div>
-                        </div>
-                        <div><button onclick="downloadRealTTF('${font.ttfUrl}', '${font.name}')" style="background: #38bdf8; color: #000; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Tải về</button></div>
-                    </div>
-                `;
-            });
-        }
-
-        function downloadRealTTF(url, fontName) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${fontName.replace(/\s+/g, '_')}.ttf`;
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function filterFonts() {
-            const query = document.getElementById('live-search-input').value.toLowerCase();
-            renderFonts(ttfFontsData.filter(f => f.name.toLowerCase().includes(query) || f.category.toLowerCase().includes(query)));
-        }
-
-        function updateLivePreviews() {
-            const text = document.getElementById('global-preview-input').value || "Kanda Hub Roblox UI";
-            document.querySelectorAll('.ttf-sample-text').forEach(el => el.innerText = text);
-        }
-
-        let robloxVersionsData = [
-            { version: "version-145f189a6a974303", arch: "Windows x64", date: "Mới nhất", link: "https://rdd.weao.gg/?channel=LIVE&binaryType=WindowsPlayer&version=version-145f189a6a974303" }
-        ];
-
-        function renderRobloxVersions() {
-            const tbody = document.getElementById('roblox-version-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            robloxVersionsData.forEach((item) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><span class="version-tag">${item.version}</span></td>
-                        <td><span class="arch-badge">${item.arch}</span></td>
-                        <td style="color: #a1a1aa;">${item.date}</td>
-                        <td><button class="btn-download" style="width: auto; padding: 6px 12px;" onclick="copyRobloxLink('${item.link}', this)">COPY LINK TẢI</button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function copyRobloxLink(url, btn) {
-            navigator.clipboard.writeText(url);
-            const originalText = btn.innerText;
-            btn.innerText = "ĐÃ COPY!";
-            setTimeout(() => { btn.innerText = originalText; }, 1500);
-        }
-
-        async function checkWeaoVersionUpdate() {
-            try {
-                const res = await fetch('https://weao.xyz/api/version/window', { cache: 'no-store' }).catch(() => null);
-                if (res && res.ok) {
-                    const data = await res.json();
-                    const latestVersion = data.version || data.guid;
-                    if (latestVersion && latestVersion !== robloxVersionsData[0].version) {
-                        robloxVersionsData.unshift({ version: latestVersion, arch: "Windows x64", date: "Mới cập nhật", link: `https://setup.rbxcdn.com/${latestVersion}-RobloxPlayerInstaller.exe` });
-                        renderRobloxVersions();
-                        document.getElementById('update-banner-text').innerText = `Weao vừa phát hiện phiên bản Roblox mới (${latestVersion})!`;
-                        document.getElementById('update-banner').style.display = 'block';
-                    }
-                }
-            } catch (e) {}
-        }
-
-        function closeUpdateBanner() { document.getElementById('update-banner').style.display = 'none'; }
-        function goToRobloxTab() { closeUpdateBanner(); switchTab('roblox-version', document.querySelectorAll('.menu-item')[1]); }
-
-        function handleKeyPress(e) { if(e.key === 'Enter') fetchScriptBloxMulti(); }
-
-        async function fetchScriptBloxMulti() {
-            const query = document.getElementById('game-search-input').value.trim();
-            const results = document.getElementById('script-results');
-            if(!query) { results.innerHTML = `<p style="color: #ef4444;">Vui lòng nhập tên game cần tìm script!</p>`; return; }
-            results.innerHTML = `<p style="color: #38bdf8;">Đang tìm kiếm script từ ScriptBlox...</p>`;
-            try {
-                const response = await fetch(`https://scriptblox.com/api/script/search?q=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                const scripts = data.result?.scripts || [];
-                if (scripts.length === 0) { results.innerHTML = `<p style="color: #a1a1aa;">Không tìm thấy script nào cho "${query}".</p>`; return; }
-                results.innerHTML = `<p style="color: #4ade80; margin-bottom: 12px; font-weight: bold;">Tìm thấy ${scripts.length} script phù hợp:</p>`;
-                scripts.slice(0, 10).forEach((topScript, index) => {
-                    const rawScript = topScript.script || "print('No code')";
-                    results.innerHTML += `
-                        <div class="script-card">
-                            <div class="script-title">⚡ ${topScript.title || `Script #${index + 1}`}</div>
-                            <div class="script-game">Game: ${topScript.game?.name || query}</div>
-                            <div class="script-code-box">
-                                <code>${rawScript}</code>
-                                <button class="btn-copy" onclick="copyScriptContent(this, \`${btoa(encodeURIComponent(rawScript))}\`)">COPY</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch (error) { results.innerHTML = `<p style="color: #ef4444;">Lỗi kết nối tới ScriptBlox API.</p>`; }
-        }
-
-        function copyScriptContent(btn, encodedScript) {
-            navigator.clipboard.writeText(decodeURIComponent(atob(encodedScript)));
-            const original = btn.innerText;
-            btn.innerText = "ĐÃ COPY!";
-            setTimeout(() => { btn.innerText = original; }, 1500);
-        }
-
-        function updateOnlineVisitorCount() {
-            const countEl = document.getElementById('online-count');
-            if (countEl) {
-                let current = parseInt(countEl.innerText) || 45;
-                let change = Math.floor(Math.random() * 5) - 2;
-                countEl.innerText = Math.min(70, Math.max(30, current + change));
-            }
-        }
-
-        async function fetchHaTinhWeather() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.3430&longitude=105.9056&current_weather=true');
-                if (res.ok) {
-                    const data = await res.json();
-                    const temp = data.current_weather.temperature;
-                    const code = data.current_weather.weathercode;
-                    
-                    let weatherInfo = { text: "Trời quang", icon: "☀️" };
-                    if (code === 0) { weatherInfo = { text: "Trời quang", icon: "☀️" }; }
-                    else if (code >= 1 && code <= 3) { weatherInfo = { text: "Có mây", icon: "⛅" }; }
-                    else if (code === 45 || code === 48) { weatherInfo = { text: "Sương mù", icon: "🌫️" }; }
-                    else if (code >= 51 && code <= 57) { weatherInfo = { text: "Mưa phùn", icon: "🌦️" }; }
-                    else if (code >= 61 && code <= 65) { weatherInfo = { text: "Đang mưa", icon: "🌧️" }; }
-                    else if (code >= 66 && code <= 67) { weatherInfo = { text: "Mưa băng", icon: "🌨️" }; }
-                    else if (code >= 71 && code <= 77) { weatherInfo = { text: "Có tuyết", icon: "❄️" }; }
-                    else if (code >= 80 && code <= 82) { weatherInfo = { text: "Mưa rào", icon: "🌧️" }; }
-                    else if (code >= 95 && code <= 99) { weatherInfo = { text: "Dông bão", icon: "⛈️" }; }
-
-                    const weatherSpan = document.getElementById('weather-text');
-                    if (weatherSpan) {
-                        weatherSpan.innerHTML = `${weatherInfo.icon} TP. Hà Tĩnh: ${weatherInfo.text}, ${temp}°C`;
-                    }
-                }
-            } catch (e) {
-                const weatherSpan = document.getElementById('weather-text');
-                if (weatherSpan) weatherSpan.innerHTML = `🌤️ TP. Hà Tĩnh: 28°C`;
-            }
-        }
-
-        window.onload = function() {
-            typeWriter();
-            renderExecutors();
-            renderFonts(ttfFontsData);
-            renderRobloxVersions();
-            
-            updateOnlineVisitorCount();
-            setInterval(updateOnlineVisitorCount, 4000);
-
-            fetchHaTinhWeather();
-            setInterval(fetchHaTinhWeather, 600000);
-
-            syncExecutorsFromWeao();
-            setTimeout(checkWeaoVersionUpdate, 2000);
-
-            setInterval(syncExecutorsFromWeao, 300000);
-            setInterval(checkWeaoVersionUpdate, 300000);
-        };
-    </script>
 </body>
 </html>
